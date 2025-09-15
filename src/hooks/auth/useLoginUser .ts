@@ -6,6 +6,7 @@ import type {
 } from '@/types/login-type';
 import { loginUser } from '@/services/auth/service';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 export const useLoginUser = () => {
   const queryClient = useQueryClient();
@@ -14,15 +15,21 @@ export const useLoginUser = () => {
   return useMutation<LoginSuccessResponse, LoginErrorResponse, LoginRequest>({
     mutationFn: loginUser,
     onSuccess: (data) => {
+      // simpan token
       localStorage.setItem('auth_token', data.data.token);
 
-      // Update profile cache sehingga Navbar langsung re-render
+      // update cache profile agar Navbar langsung rerender
       queryClient.setQueryData(['profile'], data.data.user);
 
+      // toast sukses
+      toast.success('Login berhasil!');
+
+      // redirect ke home
       navigate('/');
     },
     onError: (error) => {
-      console.error('Login failed:', error.message);
+      // toast gagal
+      toast.error(error.message || 'Login gagal, coba lagi.');
     },
   });
 };

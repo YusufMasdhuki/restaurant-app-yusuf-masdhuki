@@ -10,15 +10,23 @@ interface RestoCardProps {
   distance?: number; // opsional kalau data API ada
 }
 
+import { useNavigate } from 'react-router-dom';
+
 const RestoCard: React.FC<RestoCardProps> = ({
+  id,
   logo,
   name,
   star,
   place,
   distance = '-',
 }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className='rounded-2xl flex items-center gap-3 shadow-[0_0_20px_rgba(203,202,202,0.25)] p-4 border border-neutral-200'>
+    <div
+      onClick={() => navigate(`/detail-restaurant/${id}`)}
+      className='rounded-2xl flex items-center gap-3 shadow-[0_0_20px_rgba(203,202,202,0.25)] p-4 border border-neutral-200 hover:shadow-lg transition-shadow cursor-pointer'
+    >
       <img
         src={logo}
         alt={name}

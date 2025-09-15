@@ -10,19 +10,14 @@ import type {
 export const useProfile = () => {
   const queryClient = useQueryClient();
 
-  const query = useQuery<ProfileData | null, ProfileErrorResponse>({
+  const query = useQuery<ProfileData, ProfileErrorResponse>({
     queryKey: ['profile'],
     queryFn: async () => {
-      try {
-        const res: ProfileSuccessResponse = await getProfile();
-        return res.data;
-      } catch {
-        return null; // kalau error, kembalikan null agar UI tetap bisa render
-      }
+      const res: ProfileSuccessResponse = await getProfile();
+      return res.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 menit
     retry: false,
-    initialData: null, // <- pastikan initial data null
+    staleTime: 1000 * 60 * 5, // 5 menit
   });
 
   const setProfile = (profile: ProfileData | null) => {

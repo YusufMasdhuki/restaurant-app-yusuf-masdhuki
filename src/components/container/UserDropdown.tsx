@@ -14,12 +14,14 @@ interface UserDropdownProps {
   user: ProfileData;
   onLogout: () => void;
   scrolled: boolean;
+  textColor?: string;
 }
 
 const UserDropdown: React.FC<UserDropdownProps> = ({
   user,
   onLogout,
   scrolled,
+  textColor = scrolled ? 'text-neutral-950' : 'text-white', // default
 }) => {
   return (
     <DropdownMenu>
@@ -33,7 +35,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
           <span
             className={clsx(
               'text-lg font-semibold group-hover:underline',
-              scrolled ? 'text-neutral-950' : 'text-white'
+              textColor
             )}
           >
             {user.name}
@@ -42,7 +44,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className='w-56 bg-white dark:bg-neutral-900 rounded-md shadow-md p-2'>
-        <div className='flex items-center gap-2 p-2 border-b'>
+        <div className={'flex items-center gap-2 p-2 border-b'}>
           <img
             src='/images/default-avatar.png'
             alt={user.name}
@@ -52,14 +54,14 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </div>
 
         <DropdownMenuItem
-          className='cursor-pointer'
+          className={'cursor-pointer'}
           onClick={() => alert('Delivery Address clicked')}
         >
           Delivery Address
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          className='cursor-pointer'
+          className={'cursor-pointer'}
           onClick={() => alert('My Orders clicked')}
         >
           My Orders
