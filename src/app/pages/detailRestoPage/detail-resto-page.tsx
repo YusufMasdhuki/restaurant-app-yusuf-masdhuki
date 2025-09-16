@@ -1,16 +1,18 @@
 // src/pages/detailRestoPage.tsx
 import MenuCard from '@/components/container/menu-card';
 import ReviewCard from '@/components/container/review-card';
+import { useAddToCart } from '@/hooks/cart/useAddToCart ';
+import { useCart } from '@/hooks/cart/useCart';
+import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
+import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
 import { useRestoDetail } from '@/hooks/restaurants/useRestoDetail';
+import calculateCartByRestaurant from '@/lib/calculateCart';
+import type { CartSuccessResponse } from '@/types/cart-type';
 import { useParams } from 'react-router-dom';
+import CartSummary from './CartSummary';
 import MenuTabs from './menu-tabs';
 import RestoHeader from './resto-header';
 import RestoImages from './resto-images';
-import { useAddToCart } from '@/hooks/cart/useAddToCart ';
-import { useCart } from '@/hooks/cart/useCart';
-import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
-import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
-import type { CartSuccessResponse } from '@/types/cart-type';
 
 const DetailRestoPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +27,11 @@ const DetailRestoPage = () => {
     limitMenu: 10,
     limitReview: 6,
   });
+
+  const { totalItems, totalPrice } = calculateCartByRestaurant(
+    cartData,
+    restoId
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error?.message}</div>;
@@ -137,6 +144,14 @@ const DetailRestoPage = () => {
           ))}
         </div>
       </div>
+      <CartSummary
+        totalItems={totalItems}
+        totalPrice={totalPrice}
+        onCheckout={() => {
+          // contoh: redirect ke checkout
+          console.log('Checkout resto:', restoId);
+        }}
+      />
     </div>
   );
 };

@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ProfileData } from '@/types/profile-type';
 import clsx from 'clsx';
+import { useNavigate } from 'react-router-dom';
 
 interface UserDropdownProps {
   user: ProfileData;
@@ -23,6 +24,8 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   scrolled,
   textColor = scrolled ? 'text-neutral-950' : 'text-white', // default
 }) => {
+  const navigate = useNavigate();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,8 +64,8 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          className={'cursor-pointer'}
-          onClick={() => alert('My Orders clicked')}
+          className='cursor-pointer'
+          onClick={() => navigate('/my-orders')}
         >
           My Orders
         </DropdownMenuItem>

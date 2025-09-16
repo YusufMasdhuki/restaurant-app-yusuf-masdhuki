@@ -15,6 +15,7 @@ export const buttonVariants = cva(
           'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
         ghost: 'bg-transparent hover:underline ',
         link: 'text-primary underline-offset-4 hover:underline',
+        underline: 'hover:underline',
       },
       size: {
         default: 'h-12 w-full min-w-41',
