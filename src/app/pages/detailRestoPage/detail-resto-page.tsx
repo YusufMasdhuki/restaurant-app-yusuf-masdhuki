@@ -3,17 +3,13 @@ import MenuCard from '@/components/container/menu-card';
 import ReviewCard from '@/components/container/review-card';
 import { useAddToCart } from '@/hooks/cart/useAddToCart ';
 import { useCart } from '@/hooks/cart/useCart';
-import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
-import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
+import { useCartQuantity } from '@/hooks/cart/useCartQuantity';
 import { useRestoDetail } from '@/hooks/restaurants/useRestoDetail';
-import calculateCartByRestaurant from '@/lib/calculateCart';
-import type { CartSuccessResponse } from '@/types/cart-type';
 import { useParams } from 'react-router-dom';
 import CartSummary from './CartSummary';
 import MenuTabs from './menu-tabs';
 import RestoHeader from './resto-header';
 import RestoImages from './resto-images';
-import { findCartItem, handleCartItemQuantity } from '@/lib/cart-utils';
 
 const DetailRestoPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,41 +17,34 @@ const DetailRestoPage = () => {
 
   const addToCartMutation = useAddToCart();
   const { data: cartData } = useCart();
-  const updateCartMutation = useUpdateCartItem();
-  const removeCartMutation = useRemoveCartItem();
+
+  // ✅ selalu panggil hook, gunakan fallback []
+  const { groups, increase, decrease } = useCartQuantity({
+    initialGroups: cartData?.data?.cart ?? [],
+  });
 
   const { data, isLoading, isError, error } = useRestoDetail(restoId, {
     limitMenu: 10,
     limitReview: 6,
   });
 
-  const { totalItems, totalPrice } = calculateCartByRestaurant(
-    cartData,
-    restoId
-  );
+  // hitung total by resto dari groups, bukan dari cartData langsung
+  const restoGroup = groups.find((g) => g.restaurant.id === restoId);
+  const totalItems =
+    restoGroup?.items.reduce((sum, i) => sum + i.quantity, 0) ?? 0;
+  const totalPrice = restoGroup?.subtotal ?? 0;
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error?.message}</div>;
 
   const resto = data?.data;
-
   if (!resto) return <div>Restoran tidak ditemukan</div>;
 
-  // Ambil quantity dari cart
-  const getQuantity = (
-    cartData: CartSuccessResponse | undefined,
-    menuId: number
-  ): number => {
-    if (!cartData?.data.cart) return 0;
-
-    for (const group of cartData.data.cart) {
-      const found = group.items.find((item) => item.menu.id === menuId);
-      if (found) {
-        return found.quantity;
-      }
-    }
-
-    return 0;
+  // ✅ ambil quantity langsung dari groups
+  const getQuantity = (menuId: number) => {
+    const group = groups.find((g) => g.restaurant.id === restoId);
+    const item = group?.items.find((i) => i.menu.id === menuId);
+    return item?.quantity ?? 0;
   };
 
   return (
@@ -78,8 +67,9 @@ const DetailRestoPage = () => {
         <div className='gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6'>
           {resto.menus.map((menu) => (
             <MenuCard
+              key={menu.id}
               menu={menu}
-              quantity={getQuantity(cartData, menu.id)}
+              quantity={getQuantity(menu.id)}
               isAdding={addToCartMutation.isPending}
               onAdd={(item) =>
                 addToCartMutation.mutate({
@@ -88,30 +78,8 @@ const DetailRestoPage = () => {
                   quantity: 1,
                 })
               }
-              onIncrease={(item) => {
-                const cartItem = findCartItem(cartData, item.id);
-                if (cartItem) {
-                  handleCartItemQuantity({
-                    item: cartItem,
-                    update: (id, payload) =>
-                      updateCartMutation.mutate({ id, payload }),
-                    remove: (id) => removeCartMutation.mutate(id),
-                    change: 'increase',
-                  });
-                }
-              }}
-              onDecrease={(item) => {
-                const cartItem = findCartItem(cartData, item.id);
-                if (cartItem) {
-                  handleCartItemQuantity({
-                    item: cartItem,
-                    update: (id, payload) =>
-                      updateCartMutation.mutate({ id, payload }),
-                    remove: (id) => removeCartMutation.mutate(id),
-                    change: 'decrease',
-                  });
-                }
-              }}
+              onIncrease={() => increase(menu.id)}
+              onDecrease={() => decrease(menu.id)}
             />
           ))}
         </div>
