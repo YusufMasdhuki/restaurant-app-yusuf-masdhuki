@@ -18,6 +18,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<LoginFormType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,8 +27,6 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       rememberMe: false,
     },
   });
-
-  const rememberMe = watch('rememberMe');
 
   const onSubmit = (data: LoginFormType) => {
     loginMutation.mutate(
@@ -76,12 +75,9 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       <div className='flex items-center space-x-2'>
         <Checkbox
           id='rememberMe'
-          {...register('rememberMe')}
-          checked={rememberMe}
-          onCheckedChange={(val) => {
-            // update form value
-            register('rememberMe').onChange({ target: { value: val } });
-          }}
+          checked={watch('rememberMe')}
+          onCheckedChange={(val) => setValue('rememberMe', Boolean(val))} // ✅ set value dengan boolean
+          className='cursor-pointer'
         />
         <label htmlFor='rememberMe' className='text-sm select-none'>
           Remember Me

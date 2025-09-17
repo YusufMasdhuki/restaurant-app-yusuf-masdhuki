@@ -1,22 +1,36 @@
+import { ReviewDialog } from '@/components/container/ReviewDialog';
 import { Button } from '@/components/ui/button';
 import { useRestoDetail } from '@/hooks/restaurants/useRestoDetail';
-import type { OrderItem, OrderRestaurant } from '@/types/order-type';
+import type { OrderItem } from '@/types/order-type';
 import type { RestoMenu } from '@/types/resto-detail-type';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const OrderRestaurantCard: React.FC<OrderRestaurant> = ({
+interface OrderRestaurantProps {
+  restaurantId: number;
+  restaurantName: string;
+  items: OrderItem[];
+  subtotal: number;
+  transactionId: string;
+  status: string;
+}
+
+const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
   restaurantId,
   restaurantName,
   items,
   subtotal,
+  transactionId, // pastikan props ini ada
+  status, // tambahkan status order
 }) => {
   const { data: restoDetail } = useRestoDetail(restaurantId, {
     limitMenu: 50,
   });
   const menus: RestoMenu[] = restoDetail?.data.menus ?? [];
+  const [openReview, setOpenReview] = useState(false);
 
   return (
-    <div className='bg-white rounded-2xl shadow-[0_0_20px_rgba(203,202,202,0.25)] p-5'>
+    <div className='bg-white  p-5 shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
       <Link
         to={`/detail-restaurant/${restaurantId}`}
         className='flex items-center gap-2 mb-5'
@@ -56,8 +70,22 @@ const OrderRestaurantCard: React.FC<OrderRestaurant> = ({
             Rp{subtotal.toLocaleString('id-ID')}
           </p>
         </div>
-        <Button className='text-white bg-primary-100 w-60'>Give Review</Button>
+        {status === 'done' && (
+          <Button
+            className='text-white bg-primary-100 w-60'
+            onClick={() => setOpenReview(true)}
+          >
+            Give Review
+          </Button>
+        )}
       </div>
+      {/* Review Dialog */}
+      <ReviewDialog
+        open={openReview}
+        onClose={() => setOpenReview(false)}
+        restaurantId={restaurantId}
+        transactionId={transactionId}
+      />
     </div>
   );
 };

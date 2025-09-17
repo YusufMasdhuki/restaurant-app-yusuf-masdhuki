@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/cart/useCart';
+import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
 import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
+import { handleCartItemQuantity } from '@/lib/cart-utils';
 import { formatRupiah } from '@/lib/format-rupiah';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,6 +13,7 @@ const MyCartPage = () => {
   const { data: cartData, isLoading, isError } = useCart();
   const navigate = useNavigate();
   const updateMutation = useUpdateCartItem();
+  const removeMutation = useRemoveCartItem();
 
   if (isLoading)
     return <div className='pt-32 text-center'>Loading cart...</div>;
@@ -19,24 +22,11 @@ const MyCartPage = () => {
       <div className='pt-32 text-center text-red-500'>Failed to load cart</div>
     );
 
-  const { cart, summary } = cartData.data;
-
-  const handleIncrease = (itemId: number, quantity: number) => {
-    updateMutation.mutate({ id: itemId, payload: { quantity: quantity + 1 } });
-  };
-
-  const handleDecrease = (itemId: number, quantity: number) => {
-    if (quantity > 1) {
-      updateMutation.mutate({
-        id: itemId,
-        payload: { quantity: quantity - 1 },
-      });
-    }
-  };
+  const { cart } = cartData.data;
 
   return (
     <div className='bg-neutral-50'>
-      <div className='pt-32 max-w-200 mx-auto px-4'>
+      <div className='pt-32 max-w-200 mx-auto px-4 pb-25'>
         <h1 className='text-display-md font-extrabold mb-8'>My Cart</h1>
 
         {cart.length === 0 ? (
@@ -88,7 +78,15 @@ const MyCartPage = () => {
                         <Button
                           size='icon'
                           className='bg-primary-100 text-white'
-                          onClick={() => handleDecrease(item.id, item.quantity)}
+                          onClick={() =>
+                            handleCartItemQuantity({
+                              item,
+                              update: (id, payload) =>
+                                updateMutation.mutate({ id, payload }),
+                              remove: (id) => removeMutation.mutate(id),
+                              change: 'decrease',
+                            })
+                          }
                         >
                           -
                         </Button>
@@ -96,7 +94,15 @@ const MyCartPage = () => {
                         <Button
                           size='icon'
                           className='bg-primary-100 text-white'
-                          onClick={() => handleIncrease(item.id, item.quantity)}
+                          onClick={() =>
+                            handleCartItemQuantity({
+                              item,
+                              update: (id, payload) =>
+                                updateMutation.mutate({ id, payload }),
+                              remove: (id) => removeMutation.mutate(id),
+                              change: 'increase',
+                            })
+                          }
                         >
                           +
                         </Button>
@@ -119,7 +125,7 @@ const MyCartPage = () => {
                     className='bg-primary-100 text-white h-12 w-60'
                     onClick={() =>
                       navigate('/checkout', {
-                        state: { group }, // ✅ key harus sama dengan yang diambil di CheckoutPage
+                        state: { groups: cart }, // ✅ key harus sama dengan yang diambil di CheckoutPage
                       })
                     }
                   >
@@ -128,26 +134,6 @@ const MyCartPage = () => {
                 </div>
               </div>
             ))}
-          </div>
-        )}
-
-        {summary.totalItems > 0 && (
-          <div className='mt-10 border-t pt-6'>
-            <h2 className='text-xl font-bold mb-4'>Order Summary</h2>
-            <div className='flex justify-between mb-2'>
-              <span>Total Items</span>
-              <span>{summary.totalItems}</span>
-            </div>
-            <div className='flex justify-between mb-2'>
-              <span>Restaurant Count</span>
-              <span>{summary.restaurantCount}</span>
-            </div>
-            <div className='flex justify-between font-semibold text-lg'>
-              <span>Total Price</span>
-              <span>{formatRupiah(summary.totalPrice)}</span>
-            </div>
-
-            <Button className='w-full mt-6'>Proceed to Checkout</Button>
           </div>
         )}
       </div>

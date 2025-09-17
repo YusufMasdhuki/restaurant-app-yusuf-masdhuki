@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { useCheckoutOrder } from '@/hooks/orders/useCheckoutOrder ';
+import { useCheckoutOrder } from '@/hooks/orders/useCheckoutOrder';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

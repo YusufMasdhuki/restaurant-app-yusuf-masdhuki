@@ -2,7 +2,7 @@ import { useInView } from 'react-intersection-observer';
 import { Button } from '@/components/ui/button';
 import { OrderCard } from './OrderCard';
 import type { InfiniteData } from '@tanstack/react-query';
-import type { MyOrderSuccessResponse } from '@/types/order-type';
+import type { MyOrderSuccessResponse, Order } from '@/types/order-type';
 
 interface OrderListProps {
   data: InfiniteData<MyOrderSuccessResponse> | undefined;
@@ -10,6 +10,7 @@ interface OrderListProps {
   fetchNextPage: () => void;
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
+  search: string;
 }
 
 export const OrderList = ({
@@ -18,6 +19,7 @@ export const OrderList = ({
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
+  search,
 }: OrderListProps) => {
   const { ref } = useInView({
     threshold: 1,
@@ -32,13 +34,23 @@ export const OrderList = ({
   if (queryStatus === 'error')
     return <p className='text-red-500'>Failed to fetch orders</p>;
 
+  // ✅ Flatten semua order dari infinite data
+  const orders = data?.pages.flatMap((page) => page.data.orders) ?? [];
+
+  // ✅ Filtering berdasarkan search
+  const filtered = orders.filter(
+    (o: Order) =>
+      o.transactionId.toLowerCase().includes(search.toLowerCase()) ||
+      o.restaurants.some((r) =>
+        r.restaurantName.toLowerCase().includes(search.toLowerCase())
+      )
+  );
+
   return (
-    <div className='flex flex-col'>
-      {data?.pages.flatMap((page) =>
-        page.data.orders.map((order) => (
-          <OrderCard key={order.id} order={order} />
-        ))
-      )}
+    <div className='flex flex-col gap-6'>
+      {filtered.map((order) => (
+        <OrderCard key={order.id} order={order} />
+      ))}
 
       {hasNextPage && (
         <div ref={ref} className='flex justify-center'>

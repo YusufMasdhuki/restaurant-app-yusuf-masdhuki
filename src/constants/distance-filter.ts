@@ -8,4 +8,6 @@ export const DISTANCE: Distance[] = [
   { label: 'Within 1 km', value: 1 },
   { label: 'Within 3 km', value: 3 },
   { label: 'Within 5 km', value: 5 },
+  { label: 'Within 10 km', value: 10 },
+  { label: 'Within 20 km', value: 20 },
 ];

@@ -27,12 +27,17 @@ export default function AuthPage() {
 
   return (
     <div className='min-h-screen flex items-center w-full'>
-      <img
-        src='/images/auth-image.png'
-        alt='auth image'
-        className=' object-cover w-full flex-5 basis-80'
-      />
-      <div className='w-full flex-5 basis-80  p-6 '>
+      {/* left */}
+      <div className='w-1/2 h-screen overflow-hidden'>
+        <img
+          src='/images/auth-image.png'
+          alt='auth image'
+          className=' object-cover w-full h-full overflow-hidden'
+        />
+      </div>
+
+      {/* right */}
+      <div className='w-1/2 p-6 '>
         <div className='w-[374px] mx-auto'>
           <div className='flex items-center gap-4 font-extrabold text-neutral-950 text-display-md mb-5'>
             <LogoFoody className='text-primary-100 size-10.5' />
@@ -49,9 +54,19 @@ export default function AuthPage() {
             onValueChange={(val) => setActiveTab(val as 'login' | 'register')}
             className='w-[374px] mx-auto'
           >
-            <TabsList className='grid grid-cols-2 w-full mb-6'>
-              <TabsTrigger value='login'>Login</TabsTrigger>
-              <TabsTrigger value='register'>Register</TabsTrigger>
+            <TabsList className='grid grid-cols-2 w-full mb-6 bg-neutral-100 rounded-2xl p-2'>
+              <TabsTrigger
+                value='login'
+                className='cursor-pointer h-10 bg-transparent data-[state=active]:bg-white rounded-xl shadow-[0_0_20px_rgba(203,202,202,0.25)]'
+              >
+                Login
+              </TabsTrigger>
+              <TabsTrigger
+                value='register'
+                className='cursor-pointer h-10 bg-transparent data-[state=active]:bg-white rounded-xl shadow-[0_0_20px_rgba(203,202,202,0.25)]'
+              >
+                Register
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value='login'>

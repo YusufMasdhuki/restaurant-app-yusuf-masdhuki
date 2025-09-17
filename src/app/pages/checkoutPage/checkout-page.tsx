@@ -1,39 +1,25 @@
+import type { PaymentMethod } from '@/constants/paymentMethods';
+import { PAYMENT_METHODS } from '@/constants/paymentMethods';
+import { useCartQuantity } from '@/hooks/cart/useCartQuantity';
 import type { CartGroup } from '@/types/cart-type';
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import RestaurantItems from './RestaurantItems';
 import DeliveryAddress from './DeliveryAddress';
 import PaymentMethods from './PaymentMethods';
 import PaymentSummary from './PaymentSummary';
-import { PAYMENT_METHODS } from '@/constants/paymentMethods';
-import type { PaymentMethod } from '@/constants/paymentMethods';
+import RestaurantItems from './RestaurantItems';
 
 const CheckoutPage = () => {
   const location = useLocation();
-  const state = location.state as { group?: CartGroup };
-  const initialGroup = state?.group;
+  const state = location.state as { groups?: CartGroup[] };
+  const initialGroups = state?.groups ?? [];
 
-  const [group, setGroup] = useState<CartGroup | null>(initialGroup ?? null);
+  const { groups, updateQuantity } = useCartQuantity({ initialGroups });
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(
-    PAYMENT_METHODS[0] // default ke bank pertama
+    PAYMENT_METHODS[0]
   );
 
-  const handleUpdateQuantity = (itemId: number, newQty: number) => {
-    if (!group) return;
-    const updatedItems = group.items.map((i) =>
-      i.id === itemId
-        ? {
-            ...i,
-            quantity: Math.max(newQty, 1),
-            itemTotal: i.menu.price * Math.max(newQty, 1),
-          }
-        : i
-    );
-    const newSubtotal = updatedItems.reduce((sum, i) => sum + i.itemTotal, 0);
-    setGroup({ ...group, items: updatedItems, subtotal: newSubtotal });
-  };
-
-  if (!group) {
+  if (groups.length === 0) {
     return <div className='pt-32 text-center'>No items to checkout</div>;
   }
 
@@ -47,10 +33,13 @@ const CheckoutPage = () => {
           {/* Left */}
           <div className='flex-[7.9] basis-80 space-y-5'>
             <DeliveryAddress />
-            <RestaurantItems
-              group={group}
-              handleUpdateQuantity={handleUpdateQuantity}
-            />
+            {groups.map((group) => (
+              <RestaurantItems
+                key={group.restaurant.id}
+                group={group}
+                handleUpdateQuantity={updateQuantity}
+              />
+            ))}
           </div>
 
           {/* Right */}
@@ -59,7 +48,7 @@ const CheckoutPage = () => {
               selectedMethod={selectedMethod}
               onSelect={setSelectedMethod}
             />
-            <PaymentSummary group={group} selectedMethod={selectedMethod} />
+            <PaymentSummary groups={groups} selectedMethod={selectedMethod} />
           </div>
         </div>
       </div>

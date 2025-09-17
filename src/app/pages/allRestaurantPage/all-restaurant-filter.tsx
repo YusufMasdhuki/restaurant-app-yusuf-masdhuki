@@ -1,40 +1,21 @@
-import { Input } from '@/components/ui/input';
+import PriceFilter from '@/components/container/price-filter';
 import { DISTANCE } from '@/constants/distance-filter';
 import { RATING } from '@/constants/rating-filter';
-import { useState, useEffect } from 'react';
-import { useDebounce } from 'use-debounce'; // npm i use-debounce
+import { type RootState } from '@/store';
+import { setFilters } from '@/store/slices/restaurantFilterSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-interface AllRestaurantFilterProps {
-  onChange: (filters: {
-    location: string;
-    range?: number; // map dari distance
-    priceMin?: number;
-    priceMax?: number;
-    rating?: number;
-  }) => void;
-}
+const AllRestaurantFilter = () => {
+  const dispatch = useDispatch();
+  const filters = useSelector((state: RootState) => state.restaurantFilter);
 
-const AllRestaurantFilter = ({ onChange }: AllRestaurantFilterProps) => {
-  const [distance, setDistance] = useState<number | undefined>(undefined);
-  const [rating, setRating] = useState<number | undefined>(undefined);
-  const [minPrice, setMinPrice] = useState<number | undefined>(undefined);
-  const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+  const resetDistance = () => {
+    dispatch(setFilters({ range: undefined }));
+  };
 
-  // Debounce agar tidak terlalu sering memanggil parent
-  const [debouncedFilters] = useDebounce(
-    { distance, rating, minPrice, maxPrice },
-    300
-  );
-
-  useEffect(() => {
-    onChange({
-      location: 'jakarta',
-      range: debouncedFilters.distance,
-      priceMin: debouncedFilters.minPrice,
-      priceMax: debouncedFilters.maxPrice,
-      rating: debouncedFilters.rating,
-    });
-  }, [debouncedFilters, onChange]);
+  const resetRating = () => {
+    dispatch(setFilters({ rating: undefined }));
+  };
 
   return (
     <div className='w-66.5 shadow-[0_0_20px_rgba(203,202,202,0.25)] pt-4'>
@@ -42,7 +23,18 @@ const AllRestaurantFilter = ({ onChange }: AllRestaurantFilterProps) => {
       <div className='flex flex-col divide-y divide-neutral-300'>
         {/* Distance */}
         <div className='flex flex-col gap-2.5 px-4 py-6'>
-          <h4 className='text-lg font-extrabold text-neutral-950'>Distance</h4>
+          <div className='flex justify-between items-center'>
+            <h4 className='text-lg font-extrabold text-neutral-950'>
+              Distance
+            </h4>
+            <button
+              type='button'
+              onClick={resetDistance}
+              className='text-sm text-red-500 hover:underline'
+            >
+              Reset
+            </button>
+          </div>
           {DISTANCE.map((item) => (
             <div key={item.label} className='flex gap-2 items-center'>
               <input
@@ -50,8 +42,10 @@ const AllRestaurantFilter = ({ onChange }: AllRestaurantFilterProps) => {
                 name='distance'
                 id={item.label}
                 value={item.value}
-                checked={distance === Number(item.value)}
-                onChange={() => setDistance(Number(item.value))}
+                checked={filters.range === Number(item.value)}
+                onChange={() =>
+                  dispatch(setFilters({ range: Number(item.value) }))
+                }
               />
               <label htmlFor={item.label}>{item.label}</label>
             </div>
@@ -59,27 +53,20 @@ const AllRestaurantFilter = ({ onChange }: AllRestaurantFilterProps) => {
         </div>
 
         {/* Price */}
-        <div className='flex flex-col gap-2.5 px-4 py-6'>
-          <h4 className='text-lg font-extrabold text-neutral-950'>Price</h4>
-          <div className='flex flex-col gap-2.5 items-center'>
-            <Input
-              type='number'
-              placeholder='Minimum Price'
-              value={minPrice ?? ''}
-              onChange={(e) => setMinPrice(Number(e.target.value) || undefined)}
-            />
-            <Input
-              type='number'
-              placeholder='Maximum Price'
-              value={maxPrice ?? ''}
-              onChange={(e) => setMaxPrice(Number(e.target.value) || undefined)}
-            />
-          </div>
-        </div>
+        <PriceFilter />
 
         {/* Rating */}
         <div className='flex flex-col gap-2.5 px-4 py-6'>
-          <h4 className='text-lg font-extrabold text-neutral-950'>Rating</h4>
+          <div className='flex justify-between items-center'>
+            <h4 className='text-lg font-extrabold text-neutral-950'>Rating</h4>
+            <button
+              type='button'
+              onClick={resetRating}
+              className='text-sm text-red-500 hover:underline'
+            >
+              Reset
+            </button>
+          </div>
           {RATING.map((item) => (
             <div key={item.label} className='flex gap-2 items-center'>
               <input
@@ -87,8 +74,10 @@ const AllRestaurantFilter = ({ onChange }: AllRestaurantFilterProps) => {
                 name='rating'
                 id={item.label}
                 value={item.value}
-                checked={rating === Number(item.value)}
-                onChange={() => setRating(Number(item.value))}
+                checked={filters.rating === Number(item.value)}
+                onChange={() =>
+                  dispatch(setFilters({ rating: Number(item.value) }))
+                }
               />
               <span className='flex gap-0.5 items-center'>
                 <img src='icons/star.svg' alt='star' className='size-6' />

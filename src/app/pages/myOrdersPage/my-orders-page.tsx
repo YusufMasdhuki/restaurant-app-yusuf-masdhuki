@@ -1,12 +1,15 @@
-import { useState } from 'react';
-import { Tabs } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { OrdersTabs } from './OrdersTabs';
+import { Tabs } from '@/components/ui/tabs';
 import type { OrderStatus } from '@/constants/order-statuses';
 import { useProfile } from '@/hooks/auth/useProfile';
+import type { RootState } from '@/store';
+import { setStatus } from '@/store/slices/ordersSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import OrdersTabs from './OrdersTabs';
 
 const MyOrdersPage = () => {
-  const [status, setStatus] = useState<OrderStatus>('preparing');
+  const dispatch = useDispatch();
+  const { status } = useSelector((state: RootState) => state.orders);
 
   const { data: profile, isLoading } = useProfile();
 
@@ -15,7 +18,6 @@ const MyOrdersPage = () => {
       <div className='max-w-300 px-4 pt-32 mx-auto flex justify-between gap-8'>
         {/* Sidebar */}
         <div>
-          {' '}
           <div className='min-w-60 shadow-[0_0_20px_rgba(203,202,202,0.25)] rounded-2xl p-5'>
             <div className='flex items-center gap-2 pb-6 border-b border-neutral-300'>
               <img
@@ -42,13 +44,15 @@ const MyOrdersPage = () => {
         </div>
 
         {/* Orders Section */}
+
         <Tabs
           value={status}
-          onValueChange={(val) => setStatus(val as OrderStatus)}
+          onValueChange={(val) => dispatch(setStatus(val as OrderStatus))}
           className='w-full'
         >
           <h1 className='text-display-md font-extrabold mb-6'>My Orders</h1>
-          <OrdersTabs status={status} />
+
+          <OrdersTabs />
         </Tabs>
       </div>
     </div>

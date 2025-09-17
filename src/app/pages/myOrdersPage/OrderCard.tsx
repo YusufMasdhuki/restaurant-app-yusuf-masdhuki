@@ -16,57 +16,77 @@ export const OrderCard = ({ order }: { order: Order }) => {
   };
 
   return (
-    <>
-      <div className='text-sm text-neutral-600 flex flex-col gap-5'>
-        {order.restaurants.map((r) => {
-          return (
-            <OrderRestaurantCard
-              key={r.restaurantId}
-              restaurantId={r.restaurantId}
-              restaurantName={r.restaurantName}
-              items={r.items}
-              subtotal={r.subtotal}
-            />
-          );
-        })}
+    <div className='bg-white rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
+      {/* List restoran */}
+      <div className='text-sm flex flex-col gap-5'>
+        {order.restaurants.map((r) => (
+          <OrderRestaurantCard
+            key={r.restaurantId}
+            restaurantId={r.restaurantId}
+            restaurantName={r.restaurantName}
+            items={r.items}
+            subtotal={r.subtotal}
+            transactionId={order.transactionId}
+            status={order.status}
+          />
+        ))}
       </div>
 
-      {/* Tombol aksi */}
-      <div className='flex gap-2'>
-        {order.status === 'preparing' && (
-          <>
-            <Button
-              variant='destructive'
-              onClick={() => handleUpdateStatus(order.id, 'cancelled')}
-              disabled={isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              onClick={() => handleUpdateStatus(order.id, 'on_the_way')}
-              disabled={isPending}
-            >
-              Mark as On The Way
-            </Button>
-          </>
-        )}
-        {order.status === 'on_the_way' && (
-          <Button
-            onClick={() => handleUpdateStatus(order.id, 'delivered')}
-            disabled={isPending}
-          >
-            Mark as Delivered
-          </Button>
-        )}
-        {order.status === 'delivered' && (
-          <Button
-            onClick={() => handleUpdateStatus(order.id, 'done')}
-            disabled={isPending}
-          >
-            Mark as Done
-          </Button>
+      <div className='p-6 rounded-b-2xl bg-white border-t-3 border-dashed border-neutral-300 shadow-[0_0_20px_rgba(203,202,202,0.25)] flex flex-col gap-6'>
+        {/* Total harga */}
+        <div className='flex justify-end items-center gap-4 text-sm font-semibold text-neutral-900'>
+          <span className='text-md font-medium text-neutral-950'>
+            Total All
+          </span>
+          <span className='text-xl font-extrabold text-neutral-950'>
+            Rp {order.pricing.totalPrice.toLocaleString('id-ID')}
+          </span>
+        </div>
+
+        {/* Tombol aksi */}
+        {order.status !== 'done' && order.status !== 'cancelled' && (
+          <div className='flex gap-2 justify-end'>
+            {order.status === 'preparing' && (
+              <>
+                <Button
+                  className='w-60 bg-neutral-300'
+                  onClick={() => handleUpdateStatus(order.id, 'cancelled')}
+                  disabled={isPending}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handleUpdateStatus(order.id, 'on_the_way')}
+                  disabled={isPending}
+                  className='w-60 bg-primary-100 text-white'
+                >
+                  Mark as On The Way
+                </Button>
+              </>
+            )}
+
+            {order.status === 'on_the_way' && (
+              <Button
+                onClick={() => handleUpdateStatus(order.id, 'delivered')}
+                disabled={isPending}
+                className='w-60 bg-primary-100 text-white'
+              >
+                Mark as Delivered
+              </Button>
+            )}
+
+            {order.status === 'delivered' && (
+              <Button
+                onClick={() => handleUpdateStatus(order.id, 'done')}
+                disabled={isPending}
+                className='w-60 bg-primary-100 text-white'
+              >
+                Mark as Done
+              </Button>
+            )}
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };

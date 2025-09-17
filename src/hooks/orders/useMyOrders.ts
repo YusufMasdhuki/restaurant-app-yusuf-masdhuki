@@ -3,7 +3,7 @@ import type {
   MyOrderErrorResponse,
   MyOrderSuccessResponse,
 } from '@/types/order-type';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, type InfiniteData } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
 export const useMyOrdersInfinite = (params?: {
@@ -11,11 +11,11 @@ export const useMyOrdersInfinite = (params?: {
   limit?: number;
 }) => {
   return useInfiniteQuery<
-    MyOrderSuccessResponse, // response success
-    AxiosError<MyOrderErrorResponse>, // response error
-    MyOrderSuccessResponse, // data type per page
-    [_: string, typeof params], // queryKey type
-    number // ✅ pageParam type (harus number)
+    MyOrderSuccessResponse, // TQueryFnData (tiap page)
+    AxiosError<MyOrderErrorResponse>, // TError
+    InfiniteData<MyOrderSuccessResponse>, // TData (hasil akhir, biarin default juga bisa)
+    [string, typeof params], // TQueryKey (tuple)
+    number // TPageParam
   >({
     queryKey: ['myOrders', params],
     queryFn: ({ pageParam = 1 }) => getMyOrders({ ...params, page: pageParam }),

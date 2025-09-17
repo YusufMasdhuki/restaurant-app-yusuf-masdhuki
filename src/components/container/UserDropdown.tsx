@@ -9,7 +9,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ProfileData } from '@/types/profile-type';
 import clsx from 'clsx';
-import { useNavigate } from 'react-router-dom';
+import { MapPin } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import MyOrders from '../icons/my-orders';
+import LogOut from '../icons/log-out';
 
 interface UserDropdownProps {
   user: ProfileData;
@@ -47,34 +50,39 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className='w-56 bg-white dark:bg-neutral-900 rounded-md shadow-md p-2'>
-        <div className={'flex items-center gap-2 p-2 border-b'}>
-          <img
-            src='/images/default-avatar.png'
-            alt={user.name}
-            className='w-10 h-10 rounded-full object-cover'
-          />
-          <span className='text-lg'>{user.name}</span>
-        </div>
+        <DropdownMenuItem asChild>
+          <Link
+            to='/profile'
+            className='flex items-center gap-2 p-2 border-b group'
+          >
+            <img
+              src='/images/default-avatar.png'
+              alt={user.name}
+              className='w-10 h-10 rounded-full object-cover'
+            />
+            <span className='text-lg group-hover:underline'>{user.name}</span>
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem
           className={'cursor-pointer'}
           onClick={() => alert('Delivery Address clicked')}
         >
-          Delivery Address
+          <MapPin /> Delivery Address
         </DropdownMenuItem>
 
         <DropdownMenuItem
           className='cursor-pointer'
           onClick={() => navigate('/my-orders')}
         >
-          My Orders
+          <MyOrders /> My Orders
         </DropdownMenuItem>
 
         <DropdownMenuItem
           className='cursor-pointer text-red-500'
           onClick={onLogout}
         >
-          Logout
+          <LogOut /> Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

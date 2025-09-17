@@ -1,16 +1,17 @@
-import { TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { useMyOrdersInfinite } from '@/hooks/orders/useMyOrders';
-import { OrderList } from './OrderList';
-import { ORDER_STATUSES, type OrderStatus } from '@/constants/order-statuses';
-import type { InfiniteData } from '@tanstack/react-query';
-import type { MyOrderSuccessResponse } from '@/types/order-type';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ORDER_STATUSES } from '@/constants/order-statuses';
+import { useMyOrdersInfinite } from '@/hooks/orders/useMyOrders';
+import type { RootState } from '@/store';
+import { setSearch } from '@/store/slices/ordersSlice';
+import { Search } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { OrderList } from './OrderList';
 
-interface OrdersTabsProps {
-  status: OrderStatus;
-}
-
-export const OrdersTabs: React.FC<OrdersTabsProps> = ({ status }) => {
+const OrdersTabs = () => {
+  const dispatch = useDispatch();
+  const { status, search } = useSelector((state: RootState) => state.orders);
   const {
     data,
     fetchNextPage,
@@ -21,7 +22,19 @@ export const OrdersTabs: React.FC<OrdersTabsProps> = ({ status }) => {
 
   return (
     <div className='p-6 bg-white rounded-2xl'>
-      <TabsList className='mb-6 flex flex-wrap gap-2 w-full'>
+      <div className='relative mb-5'>
+        <Input
+          className='w-full max-w-[598px] h-11 pl-10.5 rounded-full border border-neutral-300 text-sm'
+          placeholder='Search'
+          value={search[status] ?? ''}
+          onChange={(e) =>
+            dispatch(setSearch({ status, query: e.target.value }))
+          }
+        />
+        <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500' />
+      </div>
+      <TabsList className='mb-6 flex items-center gap-3 w-full'>
+        <h2 className='text-lg font-bold text-neutral-950'>Status</h2>
         {ORDER_STATUSES.map((s) => (
           <TabsTrigger key={s.value} value={s.value} asChild className='w-auto'>
             <Button
@@ -37,14 +50,17 @@ export const OrdersTabs: React.FC<OrdersTabsProps> = ({ status }) => {
       {ORDER_STATUSES.map((s) => (
         <TabsContent key={s.value} value={s.value}>
           <OrderList
-            data={data as InfiniteData<MyOrderSuccessResponse> | undefined} // ✅ pakai assertion jika TS complain
+            data={data}
             queryStatus={queryStatus}
             fetchNextPage={fetchNextPage}
             hasNextPage={hasNextPage}
             isFetchingNextPage={isFetchingNextPage}
+            search={search[s.value] ?? ''}
           />
         </TabsContent>
       ))}
     </div>
   );
 };
+
+export default OrdersTabs;

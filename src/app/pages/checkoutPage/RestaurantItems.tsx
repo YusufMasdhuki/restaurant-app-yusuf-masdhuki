@@ -50,15 +50,15 @@ const RestaurantItems = ({
           <div className='flex items-center gap-2'>
             <Button
               size='icon'
-              variant='outline'
+              className='bg-primary-100 text-white'
               onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
             >
               -
             </Button>
-            <span className='font-semibold'>{item.quantity}</span>
+            <span>{item.quantity}</span>
             <Button
               size='icon'
-              variant='outline'
+              className='bg-primary-100 text-white'
               onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
             >
               +

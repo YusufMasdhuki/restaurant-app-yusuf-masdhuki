@@ -13,6 +13,7 @@ import CartSummary from './CartSummary';
 import MenuTabs from './menu-tabs';
 import RestoHeader from './resto-header';
 import RestoImages from './resto-images';
+import { findCartItem, handleCartItemQuantity } from '@/lib/cart-utils';
 
 const DetailRestoPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -77,9 +78,8 @@ const DetailRestoPage = () => {
         <div className='gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6'>
           {resto.menus.map((menu) => (
             <MenuCard
-              key={menu.id}
               menu={menu}
-              quantity={getQuantity(cartData, menu.id)} // ✅ pakai helper
+              quantity={getQuantity(cartData, menu.id)}
               isAdding={addToCartMutation.isPending}
               onAdd={(item) =>
                 addToCartMutation.mutate({
@@ -89,37 +89,27 @@ const DetailRestoPage = () => {
                 })
               }
               onIncrease={(item) => {
-                const group = cartData?.data.cart.find((g) =>
-                  g.items.some((it) => it.menu.id === item.id)
-                );
-                const cartItem = group?.items.find(
-                  (it) => it.menu.id === item.id
-                );
-
+                const cartItem = findCartItem(cartData, item.id);
                 if (cartItem) {
-                  updateCartMutation.mutate({
-                    id: cartItem.id, // ✅ pakai cartItem.id
-                    payload: { quantity: cartItem.quantity + 1 },
+                  handleCartItemQuantity({
+                    item: cartItem,
+                    update: (id, payload) =>
+                      updateCartMutation.mutate({ id, payload }),
+                    remove: (id) => removeCartMutation.mutate(id),
+                    change: 'increase',
                   });
                 }
               }}
               onDecrease={(item) => {
-                const group = cartData?.data.cart.find((g) =>
-                  g.items.some((it) => it.menu.id === item.id)
-                );
-                const cartItem = group?.items.find(
-                  (it) => it.menu.id === item.id
-                );
-
+                const cartItem = findCartItem(cartData, item.id);
                 if (cartItem) {
-                  if (cartItem.quantity > 1) {
-                    updateCartMutation.mutate({
-                      id: cartItem.id, // ✅ pakai cartItem.id
-                      payload: { quantity: cartItem.quantity - 1 },
-                    });
-                  } else {
-                    removeCartMutation.mutate(cartItem.id); // ✅ pakai cartItem.id
-                  }
+                  handleCartItemQuantity({
+                    item: cartItem,
+                    update: (id, payload) =>
+                      updateCartMutation.mutate({ id, payload }),
+                    remove: (id) => removeCartMutation.mutate(id),
+                    change: 'decrease',
+                  });
                 }
               }}
             />
