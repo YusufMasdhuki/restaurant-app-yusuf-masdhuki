@@ -22,23 +22,23 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review }) => {
         <img
           src='/images/default-avatar.png'
           alt='avatar'
-          className='size-16'
+          className='size-14.5 md:size-16'
         />
         <div>
-          <p className='font-extrabold text-lg text-neutral-950'>
+          <p className='font-extrabold text-md md:text-lg text-neutral-950'>
             {review.user.name}
           </p>
-          <p className='text-md text-neutral-950'>
+          <p className='text-sm md:text-md text-neutral-950'>
             {dayjs(review.createdAt).format('DD MMMM YYYY, HH:mm')}
           </p>
         </div>
       </div>
-      <div className='flex items-center gap-0.5 mb-2'>
+      <div className='flex items-center gap-0 md:gap-0.5 mb-2'>
         {Array.from({ length: review.star }).map((_, i) => (
           <img key={i} src='/icons/star.svg' alt='star' className='size-6' />
         ))}
       </div>
-      <p className='text-md text-neutal-950'>{review.comment}</p>
+      <p className='text-sm md:text-md text-neutral-950'>{review.comment}</p>
     </div>
   );
 };

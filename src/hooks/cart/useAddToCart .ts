@@ -7,7 +7,6 @@ import type {
 import type { CartItem, CartResponse } from '@/types/cart-type'; // ⬅️ tambahan
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
@@ -70,9 +69,7 @@ export const useAddToCart = () => {
         queryClient.setQueryData(['cart'], context.previousCart);
       }
     },
-    onSuccess: (data) => {
-      toast.success(data.message);
-    },
+
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },

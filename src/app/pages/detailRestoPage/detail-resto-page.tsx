@@ -74,9 +74,11 @@ const DetailRestoPage = () => {
 
       {/* Menu Section */}
       <div>
-        <h2 className='text-display-lg font-extrabold mb-6 mt-8'>Menu</h2>
+        <h2 className='text-display-xs md:text-display-lg font-extrabold mb-4 md:mb-6 mt-4 md:mt-8'>
+          Menu
+        </h2>
         <MenuTabs />
-        <div className='gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-6'>
+        <div className='gap-4 md:gap-5 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 mt-4 md:mt-6'>
           {resto.menus.map((menu) => (
             <MenuCard
               key={menu.id}
@@ -120,17 +122,21 @@ const DetailRestoPage = () => {
       </div>
 
       {/* Review Section */}
-      <div className='pt-8 mt-8 border-t border-neutral-300 mb-12'>
-        <h2 className='text-display-lg font-extrabold text-neutral-950 mb-3'>
+      <div className='pt-4 md:pt-8 mt-4 md:mt-8 border-t border-neutral-300 mb-10 md:mb-12'>
+        <h2 className='text-display-xs md:text-display-lg font-extrabold text-neutral-950 mb-2 md:mb-3'>
           Reviews
         </h2>
         <div className='flex items-center gap-1'>
-          <img src='/icons/star.svg' alt='star' className='size-8.5' />
-          <p className='text-xl font-extrabold text-neutral-950'>
+          <img
+            src='/icons/star.svg'
+            alt='star'
+            className='size-6 md:size-8.5'
+          />
+          <p className='text-md md:text-xl font-extrabold text-neutral-950'>
             {resto.averageRating} ({resto.totalReviews} ulasan)
           </p>
         </div>
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-6'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 md:mt-6'>
           {resto.reviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}
