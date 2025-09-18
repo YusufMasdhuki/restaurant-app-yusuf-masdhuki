@@ -1,20 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import UserDropdown from '@/components/container/UserDropdown';
 import BagIcon from '@/components/icons/bag-icon';
 import LogoFoody from '@/components/icons/logo-foody';
 import { Button } from '@/components/ui/button';
+import { useLogout } from '@/hooks/auth/useLogout';
 import { useProfile } from '@/hooks/auth/useProfile';
 import { useCart } from '@/hooks/cart/useCart';
-import { useQueryClient } from '@tanstack/react-query';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const queryClient = useQueryClient();
 
   // ✅ Ambil profile dan cart via React Query
   const { data: user, isLoading: loadingProfile } = useProfile();
@@ -27,12 +26,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-
-    // Reset cache profile agar React Query langsung return null
-    queryClient.setQueryData(['profile'], null);
-  };
+  const logout = useLogout();
 
   const isHome = location.pathname === '/';
 
@@ -140,7 +134,7 @@ const Navbar = () => {
 
             <UserDropdown
               user={user}
-              onLogout={handleLogout}
+              onLogout={logout}
               scrolled={scrolled}
               textColor={textColor}
             />

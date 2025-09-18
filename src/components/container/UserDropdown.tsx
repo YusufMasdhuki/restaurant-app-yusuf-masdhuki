@@ -9,10 +9,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { ProfileData } from '@/types/profile-type';
 import clsx from 'clsx';
-import { MapPin } from 'lucide-react';
+import { MapPin, Star } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import MyOrders from '../icons/my-orders';
 import LogOut from '../icons/log-out';
+import { useState } from 'react';
+import { LogoutConfirmDialog } from './LogoutConfirmDialog';
 
 interface UserDropdownProps {
   user: ProfileData;
@@ -28,6 +30,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   textColor = scrolled ? 'text-neutral-950' : 'text-white', // default
 }) => {
   const navigate = useNavigate();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <DropdownMenu>
@@ -79,12 +82,27 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
         </DropdownMenuItem>
 
         <DropdownMenuItem
+          className='cursor-pointer'
+          onClick={() => navigate('/my-reviews')}
+        >
+          <Star /> My Reviews
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
           className='cursor-pointer text-red-500'
-          onClick={onLogout}
+          onClick={() => setConfirmOpen(true)}
         >
           <LogOut /> Logout
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <LogoutConfirmDialog
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        onConfirm={() => {
+          onLogout();
+          setConfirmOpen(false);
+        }}
+      />
     </DropdownMenu>
   );
 };
