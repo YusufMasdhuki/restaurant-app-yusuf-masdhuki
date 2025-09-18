@@ -15,7 +15,7 @@ const MyOrdersPage = () => {
 
   return (
     <div className='bg-neutral-50'>
-      <div className='max-w-300 px-4 pt-32 mx-auto flex justify-between gap-8'>
+      <div className='max-w-300 px-4 pt-32 mx-auto flex justify-between gap-8 pb-25'>
         {/* Sidebar */}
         <div>
           <div className='min-w-60 shadow-[0_0_20px_rgba(203,202,202,0.25)] rounded-2xl p-5'>

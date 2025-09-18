@@ -1,10 +1,11 @@
 import { ReviewDialog } from '@/components/container/ReviewDialog';
 import { Button } from '@/components/ui/button';
+import { useProfile } from '@/hooks/auth/useProfile';
 import { useRestoDetail } from '@/hooks/restaurants/useRestoDetail';
 import type { OrderItem } from '@/types/order-type';
 import type { RestoMenu } from '@/types/resto-detail-type';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface OrderRestaurantProps {
   restaurantId: number;
@@ -20,17 +21,25 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
   restaurantName,
   items,
   subtotal,
-  transactionId, // pastikan props ini ada
-  status, // tambahkan status order
+  transactionId,
+  status,
 }) => {
-  const { data: restoDetail } = useRestoDetail(restaurantId, {
-    limitMenu: 50,
-  });
+  const { data: restoDetail } = useRestoDetail(restaurantId, { limitMenu: 50 });
   const menus: RestoMenu[] = restoDetail?.data.menus ?? [];
   const [openReview, setOpenReview] = useState(false);
+  const navigate = useNavigate();
+
+  const { data: profile } = useProfile(); // ambil user login
+  const currentUserId = profile?.id;
+
+  // ambil review user untuk resto ini
+  const review = restoDetail?.data.reviews.find(
+    (r) => r.user.id === currentUserId
+  );
 
   return (
-    <div className='bg-white  p-5 shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
+    <div className='bg-white p-5 shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
+      {/* Header */}
       <Link
         to={`/detail-restaurant/${restaurantId}`}
         className='flex items-center gap-2 mb-5'
@@ -38,8 +47,10 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
         <img src='/icons/resto-icon.svg' alt='resto-icon' className='w-8 h-8' />
         <p className='font-bold text-lg text-neutral-950'>{restaurantName}</p>
       </Link>
+
+      {/* Items */}
       <div className='flex flex-col gap-5 border-b border-neutral-300 pb-5'>
-        {items.map((item: OrderItem) => {
+        {items.map((item) => {
           const menu = menus.find((m) => m.id === item.menuId);
           return (
             <div key={item.menuId} className='flex items-center gap-4'>
@@ -50,7 +61,6 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
                   className='w-full h-full object-center object-cover rounded-xl'
                 />
               </div>
-
               <div>
                 <p className='text-md font-medium text-neutral-950'>
                   {item.menuName}
@@ -63,6 +73,8 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
           );
         })}
       </div>
+
+      {/* Footer */}
       <div className='pt-5 flex items-center justify-between'>
         <div>
           <h3 className='text-md font-medium text-neutral-950'>Total</h3>
@@ -70,15 +82,25 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
             Rp{subtotal.toLocaleString('id-ID')}
           </p>
         </div>
-        {status === 'done' && (
-          <Button
-            className='text-white bg-primary-100 w-60'
-            onClick={() => setOpenReview(true)}
-          >
-            Give Review
-          </Button>
-        )}
+
+        {status === 'done' &&
+          (review ? (
+            <Button
+              className='text-white bg-neutral-700 w-60'
+              onClick={() => navigate('/my-reviews')}
+            >
+              Lihat Review
+            </Button>
+          ) : (
+            <Button
+              className='text-white bg-primary-100 w-60'
+              onClick={() => setOpenReview(true)}
+            >
+              Give Review
+            </Button>
+          ))}
       </div>
+
       {/* Review Dialog */}
       <ReviewDialog
         open={openReview}

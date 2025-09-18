@@ -25,7 +25,9 @@ const PaymentSummary: React.FC<Props> = ({ groups, selectedMethod }) => {
   const total = subtotalAll + deliveryFee + serviceFee;
 
   return (
-    <div className='shadow-[0_0_20px_rgba(203,202,202,0.25)] bg-white p-5 rounded-2xl'>
+    <div className='relative bg-white p-5 rounded-b-2xl'>
+      <div className='absolute top-0 left-0 w-2.5 h-2.5 bg-neutral-50 rounded-br-full' />
+      <div className='absolute top-0 right-0 w-2.5 h-2.5 bg-neutral-50 rounded-bl-full' />
       <h2 className='text-lg font-extrabold text-neutral-950 mb-4'>
         Payment Summary
       </h2>

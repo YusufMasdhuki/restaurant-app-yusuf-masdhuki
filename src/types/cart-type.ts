@@ -52,3 +52,16 @@ export interface CartErrorResponse {
   message: string;
   errors?: string[];
 }
+
+export interface CartGroup {
+  restaurant: CartRestaurant;
+  items: CartItem[];
+  subtotal: number;
+}
+
+export interface CartResponse {
+  success: true;
+  data: {
+    cart: CartGroup[];
+  };
+}

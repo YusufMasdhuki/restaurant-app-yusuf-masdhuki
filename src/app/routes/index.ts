@@ -43,4 +43,8 @@ export const routes: Router[] = [
     path: '/success',
     element: lazy(() => import('../pages/successPage')),
   },
+  {
+    path: '/my-reviews',
+    element: lazy(() => import('../pages/myReviewPage')),
+  },
 ];

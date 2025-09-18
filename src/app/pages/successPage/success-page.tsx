@@ -1,9 +1,15 @@
+import LogoFoody from '@/components/icons/logo-foody';
+import { Button } from '@/components/ui/button';
+import { PAYMENT_METHODS } from '@/constants/paymentMethods';
 import type { CheckoutTransaction } from '@/types/checkout-type';
-import { Link, useLocation } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { Check } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const SuccessPage = () => {
   const location = useLocation();
   const state = location.state as { transaction: CheckoutTransaction };
+  const navigate = useNavigate();
 
   if (!state?.transaction) {
     return (
@@ -16,37 +22,114 @@ const SuccessPage = () => {
     );
   }
 
+  // ✅ assign transaction dulu
   const { transaction } = state;
 
+  // ✅ baru cari payment method
+  const payment = PAYMENT_METHODS.find(
+    (m) => m.id === transaction.paymentMethod
+  );
+
   return (
-    <div className='max-w-xl mx-auto pt-32 px-4 text-center'>
-      <h1 className='text-3xl font-bold text-green-600 mb-4'>
-        Order Successful 🎉
-      </h1>
-      <p className='text-neutral-700 mb-6'>
-        Transaction ID:{' '}
-        <span className='font-mono'>{transaction.transactionId}</span>
-      </p>
+    <div className='bg-neutral-200 min-h-screen'>
+      <div className='max-w-[428px] mx-auto pt-32 px-4 pb-25'>
+        <div className='flex items-center gap-4 justify-center mb-7'>
+          <LogoFoody className='size-10.5 text-primary-100' />
+          <h1 className='text-display-md font-extrabold text-neutral-950'>
+            Foody
+          </h1>
+        </div>
 
-      <div className='bg-white shadow rounded-lg p-5 text-left space-y-3'>
-        <p>
-          <strong>Payment Method:</strong> {transaction.paymentMethod}
-        </p>
-        <p>
-          <strong>Status:</strong> {transaction.status}
-        </p>
-        <p>
-          <strong>Total:</strong> Rp{' '}
-          {transaction.pricing.totalPrice.toLocaleString()}
-        </p>
+        <div className='relative flex flex-col justify-center items-center gap-0.5 p-5 bg-white rounded-t-2xl'>
+          <div
+            className='absolute bottom-0 left-0 right-0 h-px bg-transparent 
+                  [background-image:repeating-linear-gradient(90deg,#d4d4d8_0_4px,transparent_4px_8px)]'
+          />
+
+          <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-tr-full' />
+          <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-neutral-200 rounded-tl-full' />
+          <div className='size-16 rounded-full bg-[#44AB09] flex items-center justify-center'>
+            <Check className='text-white size-12' />
+          </div>
+          <h2 className='text-xl font-extrabold text-neutral-950'>
+            Payment Success
+          </h2>
+          <p className='text-neutral-950 text-md text-center'>
+            Your payment has been successfully processed.
+          </p>
+        </div>
+        <div className='relative bg-white p-5  text-neutral-950'>
+          {/* sudut cekungan */}
+          <div className='absolute top-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-br-full' />
+          <div className='absolute top-0 right-0 w-2.5 h-2.5 bg-neutral-200 rounded-bl-full' />
+          <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-neutral-200 rounded-tl-full' />
+          <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-tr-full' />
+
+          <div className='flex flex-col gap-4'>
+            <div className='flex justify-between'>
+              <span className='text-md font-medium'>Date</span>
+              <span className='text-md font-bold'>
+                {dayjs(transaction.createdAt).format('DD MMMM YYYY, HH:mm')}
+              </span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-md font-medium'>Payment Method</span>
+              <span className='font-bold text-md'>
+                {payment ? payment.name : transaction.paymentMethod}
+              </span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-md font-medium'>
+                Price (
+                {transaction.restaurants.reduce(
+                  (acc, resto) =>
+                    acc +
+                    resto.items.reduce((sum, item) => sum + item.quantity, 0),
+                  0
+                )}
+                items)
+              </span>
+              <span className='font-bold text-md'>
+                Rp {transaction.pricing.subtotal.toLocaleString()}
+              </span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-md font-medium'>Delivery Fee</span>
+              <span className='font-bold text-md'>
+                Rp {transaction.pricing.deliveryFee.toLocaleString()}
+              </span>
+            </div>
+            <div className='flex justify-between'>
+              <span className='text-md font-medium'>Service Fee</span>
+              <span className='font-bold text-md'>
+                Rp {transaction.pricing.serviceFee.toLocaleString()}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className='relative bg-white p-5 rounded-b-2xl'>
+          <div
+            className='absolute top-0 left-0 right-0 h-px bg-transparent 
+                  [background-image:repeating-linear-gradient(90deg,#d4d4d8_0_4px,transparent_4px_8px)]'
+          />
+          <div className='absolute top-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-br-full' />
+          <div className='absolute top-0 right-0 w-2.5 h-2.5 bg-neutral-200 rounded-bl-full' />
+          <div className='flex flex-col gap-4'>
+            <div className='flex justify-between font-bold text-lg'>
+              <span className='text-md font-medium'>Total</span>
+              <span className='font-bold text-md'>
+                Rp {transaction.pricing.totalPrice.toLocaleString()}
+              </span>
+            </div>
+            <Button
+              onClick={() => navigate('/my-orders')}
+              className='w-full bg-primary-100 text-white'
+            >
+              See My Orders
+            </Button>
+          </div>
+        </div>
       </div>
-
-      <Link
-        to='/my-orders'
-        className='inline-block mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg'
-      >
-        View Orders
-      </Link>
     </div>
   );
 };

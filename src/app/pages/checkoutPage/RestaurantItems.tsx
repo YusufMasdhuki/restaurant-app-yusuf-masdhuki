@@ -1,18 +1,25 @@
 import { Button } from '@/components/ui/button';
 import { formatRupiah } from '@/lib/format-rupiah';
-import type { CartGroup } from '@/types/cart-type';
+import type { CartGroup, CartItem } from '@/types/cart-type';
 import { useNavigate } from 'react-router-dom';
+
+interface RestaurantItemsProps {
+  group: CartGroup;
+  handleUpdateQuantity: (
+    item: CartItem,
+    change: 'increase' | 'decrease'
+  ) => void;
+}
 
 const RestaurantItems = ({
   group,
   handleUpdateQuantity,
-}: {
-  group: CartGroup;
-  handleUpdateQuantity: (itemId: number, newQty: number) => void;
-}) => {
+}: RestaurantItemsProps) => {
   const navigate = useNavigate();
+
   return (
     <div className='shadow bg-white p-5 rounded-2xl flex flex-col gap-5'>
+      {/* Header */}
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-2'>
           <img
@@ -30,8 +37,10 @@ const RestaurantItems = ({
         </Button>
       </div>
 
+      {/* Items */}
       {group.items.map((item) => (
         <div key={item.id} className='flex items-center justify-between'>
+          {/* Item Info */}
           <div className='flex items-center gap-3'>
             <img
               src={item.menu.image}
@@ -50,16 +59,15 @@ const RestaurantItems = ({
           <div className='flex items-center gap-2'>
             <Button
               size='icon'
-              className='bg-primary-100 text-white'
-              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+              onClick={() => handleUpdateQuantity(item, 'decrease')}
             >
               -
             </Button>
-            <span>{item.quantity}</span>
+            <span className='min-w-[32px] text-center'>{item.quantity}</span>
             <Button
               size='icon'
               className='bg-primary-100 text-white'
-              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+              onClick={() => handleUpdateQuantity(item, 'increase')}
             >
               +
             </Button>

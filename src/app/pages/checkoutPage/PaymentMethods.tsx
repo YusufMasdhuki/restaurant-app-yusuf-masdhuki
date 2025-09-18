@@ -13,7 +13,16 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   onSelect,
 }) => {
   return (
-    <div className='shadow bg-white p-5 rounded-2xl'>
+    <div className='relative overflow-hidden bg-white p-5 rounded-t-2xl'>
+      {/* border dashed dibuat manual */}
+      <div
+        className='absolute bottom-0 left-0 right-0 h-px bg-transparent 
+                  [background-image:repeating-linear-gradient(90deg,#d4d4d8_0_4px,transparent_4px_8px)]'
+      />
+
+      {/* cekungan */}
+      <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-50 rounded-tr-full' />
+      <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-neutral-50 rounded-tl-full' />
       <h2 className='text-lg font-extrabold text-neutral-950 mb-4'>
         Payment Method
       </h2>

@@ -13,9 +13,9 @@ export const useMyReviewsInfinite = (
   return useInfiniteQuery<
     GetMyReviewsSuccessResponse, // TQueryFnData
     AxiosError<GetMyReviewsErrorResponse>, // TError
-    GetMyReviewsSuccessResponse, // TData (default sama aja)
-    [string, typeof params], // TQueryKey
-    number // TPageParam ✅
+    GetMyReviewsSuccessResponse, // TData
+    ['my-reviews-infinite', typeof params], // TQueryKey
+    number // TPageParam
   >({
     queryKey: ['my-reviews-infinite', params],
     queryFn: ({ pageParam = 1 }) =>

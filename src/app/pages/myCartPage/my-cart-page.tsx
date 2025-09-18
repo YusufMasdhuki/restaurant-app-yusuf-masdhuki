@@ -2,7 +2,9 @@
 
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/hooks/cart/useCart';
-import { useCartQuantity } from '@/hooks/cart/useCartQuantity';
+import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
+import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
+import { handleCartItemQuantity } from '@/lib/cart-utils';
 import { formatRupiah } from '@/lib/format-rupiah';
 import { ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -10,10 +12,8 @@ import { Link, useNavigate } from 'react-router-dom';
 const MyCartPage = () => {
   const { data: cartData, isLoading, isError } = useCart();
   const navigate = useNavigate();
-
-  const { groups, increase, decrease } = useCartQuantity({
-    initialGroups: cartData?.data?.cart ?? [],
-  });
+  const updateMutation = useUpdateCartItem();
+  const removeMutation = useRemoveCartItem();
 
   if (isLoading)
     return <div className='pt-32 text-center'>Loading cart...</div>;
@@ -22,19 +22,21 @@ const MyCartPage = () => {
       <div className='pt-32 text-center text-red-500'>Failed to load cart</div>
     );
 
+  const { cart } = cartData.data;
+
   return (
     <div className='bg-neutral-50'>
       <div className='pt-32 max-w-200 mx-auto px-4 pb-25'>
         <h1 className='text-display-md font-extrabold mb-8'>My Cart</h1>
 
-        {groups.length === 0 ? (
+        {cart.length === 0 ? (
           <div className='text-center text-gray-500'>Your cart is empty</div>
         ) : (
           <div className='space-y-8'>
-            {groups.map((group) => (
+            {cart.map((group) => (
               <div
                 key={group.restaurant.id}
-                className='rounded-2xl p-5 bg-white'
+                className=' rounded-2xl p-5 bg-white'
               >
                 {/* Restaurant */}
                 <Link
@@ -76,7 +78,15 @@ const MyCartPage = () => {
                         <Button
                           size='icon'
                           className='bg-primary-100 text-white'
-                          onClick={() => decrease(item.id)}
+                          onClick={() =>
+                            handleCartItemQuantity({
+                              item,
+                              update: (id, payload) =>
+                                updateMutation.mutate({ id, payload }),
+                              remove: (id) => removeMutation.mutate(id),
+                              change: 'decrease',
+                            })
+                          }
                         >
                           -
                         </Button>
@@ -84,7 +94,15 @@ const MyCartPage = () => {
                         <Button
                           size='icon'
                           className='bg-primary-100 text-white'
-                          onClick={() => increase(item.id)}
+                          onClick={() =>
+                            handleCartItemQuantity({
+                              item,
+                              update: (id, payload) =>
+                                updateMutation.mutate({ id, payload }),
+                              remove: (id) => removeMutation.mutate(id),
+                              change: 'increase',
+                            })
+                          }
                         >
                           +
                         </Button>
@@ -107,7 +125,7 @@ const MyCartPage = () => {
                     className='bg-primary-100 text-white h-12 w-60'
                     onClick={() =>
                       navigate('/checkout', {
-                        state: { groups }, // ✅ sekarang pakai groups dari hook
+                        state: { groups: cart }, // ✅ key harus sama dengan yang diambil di CheckoutPage
                       })
                     }
                   >
