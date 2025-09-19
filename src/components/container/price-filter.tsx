@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setFilters } from '@/store/slices/restaurantFilterSlice';
 import { type RootState } from '@/store';
 import { z } from 'zod';
+import { Button } from '../ui/button';
 
 const priceSchema = z
   .object({
@@ -37,50 +38,81 @@ const PriceFilter = () => {
 
     if (!result.success) {
       const zodErrors: { min?: string; max?: string } = {};
-
-      // akses issues
       result.error.issues.forEach((err) => {
         if (err.path[0] === 'min') zodErrors.min = err.message;
         if (err.path[0] === 'max') zodErrors.max = err.message;
       });
-
       setErrors(zodErrors);
     } else {
       setErrors({});
-      dispatch(
-        setFilters({
-          priceMin: parsedMin,
-          priceMax: parsedMax,
-        })
-      );
+      dispatch(setFilters({ priceMin: parsedMin, priceMax: parsedMax }));
     }
   };
 
+  const resetPriceFilter = () => {
+    setMinPrice('');
+    setMaxPrice('');
+    setErrors({});
+    dispatch(setFilters({ priceMin: undefined, priceMax: undefined }));
+  };
+
   return (
-    <div className='flex flex-col gap-2.5 items-center px-4'>
-      <Input
-        type='number'
-        placeholder='Minimum Price'
-        value={minPrice}
-        onChange={(e) => setMinPrice(e.target.value)}
-      />
-      {errors.min && <p className='text-red-500 text-sm'>{errors.min}</p>}
+    <div className='flex flex-col gap-2.5 py-3 md:py-6'>
+      <div className='flex justify-between items-center'>
+        <h3 className='text-md md:text-lg font-extrabold text-neutral-950'>
+          Price
+        </h3>
+        <Button
+          variant='underline'
+          size='normal'
+          onClick={resetPriceFilter}
+          className='text-sm font-medium text-red-500 hover:underline'
+        >
+          Reset
+        </Button>
+      </div>
+      <div className='relative text-sm md:text-md'>
+        <label
+          htmlFor='min'
+          className='absolute top-1.25 md:top-2 left-2 size-9.5 bg-neutral-100 flex items-center justify-center rounded-xs'
+        >
+          Rp
+        </label>
+        <Input
+          type='number'
+          id='min'
+          placeholder='Minimum Price'
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value)}
+          className='h-12 md:h-13.5 pl-13.5 rounded-md'
+        />
+        {errors.min && <p className='text-red-500 text-sm'>{errors.min}</p>}
+      </div>
+      <div className='relative text-sm md:text-md'>
+        <label
+          htmlFor='max'
+          className='absolute top-1.25 md:top-2 left-2 size-9.5 bg-neutral-100 flex items-center justify-center rounded-xs'
+        >
+          Rp
+        </label>
+        <Input
+          type='number'
+          id='max'
+          placeholder='Maximum Price'
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
+          className='h-12 md:h-13.5 pl-13.5 rounded-md'
+        />
+        {errors.max && <p className='text-red-500 text-sm'>{errors.max}</p>}
+      </div>
 
-      <Input
-        type='number'
-        placeholder='Maximum Price'
-        value={maxPrice}
-        onChange={(e) => setMaxPrice(e.target.value)}
-      />
-      {errors.max && <p className='text-red-500 text-sm'>{errors.max}</p>}
-
-      <button
+      <Button
         type='button'
         onClick={applyPriceFilter}
-        className='bg-blue-600 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-700 transition'
+        className='bg-primary-100 text-white'
       >
         Apply
-      </button>
+      </Button>
     </div>
   );
 };

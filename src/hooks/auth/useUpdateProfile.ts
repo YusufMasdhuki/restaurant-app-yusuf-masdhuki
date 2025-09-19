@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { toast } from 'sonner';
 
+import { errorToast, successToast } from '@/lib/toast-helper';
 import { updateProfile } from '@/services/auth/service';
 import type {
   UpdateProfileErrorResponse,
@@ -19,11 +19,11 @@ export const useUpdateProfile = () => {
   >({
     mutationFn: updateProfile,
     onSuccess: (data) => {
-      toast.success(data.message);
+      successToast(data.message);
       queryClient.invalidateQueries({ queryKey: ['profile'] }); // 🔄 refresh data profile
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Update profile gagal');
+      errorToast(error.response?.data?.message || 'Update profile gagal');
     },
   });
 };

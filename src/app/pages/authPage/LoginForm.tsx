@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
-import { useLoginUser } from '@/hooks/auth/useLoginUser ';
 import { loginSchema, type LoginFormType } from '@/schemas/login-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { useLoginUser } from '@/hooks/auth/useLoginUser ';
+import { FloatingInput } from '@/components/container/floating-input';
 
 type LoginFormProps = {
   onSuccess?: () => void;
@@ -12,6 +14,7 @@ type LoginFormProps = {
 
 export default function LoginForm({ onSuccess }: LoginFormProps) {
   const loginMutation = useLoginUser();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -33,13 +36,11 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       { email: data.email, password: data.password },
       {
         onSuccess: (res) => {
-          // Simpan token sesuai rememberMe
           if (data.rememberMe) {
             localStorage.setItem('auth_token', res.data.token);
           } else {
             sessionStorage.setItem('auth_token', res.data.token);
           }
-
           onSuccess?.();
         },
       }
@@ -47,36 +48,40 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-      <div>
-        <Input
-          type='email'
-          placeholder='Email'
-          {...register('email')}
-          required
-        />
-        {errors.email && (
-          <p className='text-red-500 text-sm mt-1'>{errors.email.message}</p>
-        )}
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 md:space-y-5'>
+      {/* Email */}
+      <FloatingInput
+        type='email'
+        label='Email'
+        error={errors.email?.message}
+        {...register('email')}
+        required
+      />
 
-      <div>
-        <Input
-          type='password'
-          placeholder='Password'
+      {/* Password + tombol mata */}
+      <div className='relative'>
+        <FloatingInput
+          type={showPassword ? 'text' : 'password'}
+          label='Password'
+          error={errors.password?.message}
           {...register('password')}
           required
         />
-        {errors.password && (
-          <p className='text-red-500 text-sm mt-1'>{errors.password.message}</p>
-        )}
+        <button
+          type='button'
+          onClick={() => setShowPassword((prev) => !prev)}
+          className='absolute right-3 top-6 md:top-7 -translate-y-1/2 text-neutral-500 hover:text-neutral-800'
+        >
+          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
       </div>
 
+      {/* Remember Me */}
       <div className='flex items-center space-x-2'>
         <Checkbox
           id='rememberMe'
           checked={watch('rememberMe')}
-          onCheckedChange={(val) => setValue('rememberMe', Boolean(val))} // ✅ set value dengan boolean
+          onCheckedChange={(val) => setValue('rememberMe', Boolean(val))}
           className='cursor-pointer'
         />
         <label htmlFor='rememberMe' className='text-sm select-none'>
@@ -84,6 +89,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
         </label>
       </div>
 
+      {/* Submit */}
       <Button
         type='submit'
         className='w-full bg-primary-100 text-neutral-25 hover:bg-[#ba534c]'

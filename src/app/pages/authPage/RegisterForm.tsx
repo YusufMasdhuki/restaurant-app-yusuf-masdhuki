@@ -1,13 +1,14 @@
-// RegisterForm.tsx
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRegisterUser } from '@/hooks/auth/useRegisterUser ';
 import {
   registerSchema,
   type RegisterFormType,
 } from '@/schemas/register-schema';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRegisterUser } from '@/hooks/auth/useRegisterUser ';
+import { FloatingInput } from '@/components/container/floating-input';
 
 type RegisterFormProps = {
   onSuccess?: () => void;
@@ -15,6 +16,7 @@ type RegisterFormProps = {
 
 export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   const registerMutation = useRegisterUser();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -31,37 +33,45 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-      <div>
-        <Input placeholder='Name' {...register('name')} />
-        {errors.name && (
-          <p className='text-red-500 text-sm'>{errors.name.message}</p>
-        )}
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 md:space-y-5'>
+      <FloatingInput
+        label='Name'
+        type='text'
+        {...register('name')}
+        error={errors.name?.message}
+        required
+      />
+      <FloatingInput
+        label='Email'
+        type='email'
+        {...register('email')}
+        error={errors.email?.message}
+        required
+      />
+      <FloatingInput
+        label='Phone'
+        type='text'
+        {...register('phone')}
+        error={errors.phone?.message}
+        required
+      />
 
-      <div>
-        <Input placeholder='Email' {...register('email')} />
-        {errors.email && (
-          <p className='text-red-500 text-sm'>{errors.email.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Input placeholder='Phone' {...register('phone')} />
-        {errors.phone && (
-          <p className='text-red-500 text-sm'>{errors.phone.message}</p>
-        )}
-      </div>
-
-      <div>
-        <Input
-          type='password'
-          placeholder='Password'
+      {/* Password khusus pakai tombol mata */}
+      <div className='relative'>
+        <FloatingInput
+          label='Password'
+          type={showPassword ? 'text' : 'password'}
           {...register('password')}
+          error={errors.password?.message}
+          required
         />
-        {errors.password && (
-          <p className='text-red-500 text-sm'>{errors.password.message}</p>
-        )}
+        <button
+          type='button'
+          onClick={() => setShowPassword((prev) => !prev)}
+          className='absolute right-3 top-6 md:top-7 -translate-y-1/2 text-neutral-500 hover:text-neutral-800'
+        >
+          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
       </div>
 
       <Button

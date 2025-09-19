@@ -17,7 +17,7 @@ const MainLayout: React.FC<{
       {!hideLayout && <Navbar />}
       {children}
       {!hideLayout && <Footer />}
-      <Toaster />
+      <Toaster position='top-right' richColors />
     </QueryClientProvider>
   );
 };

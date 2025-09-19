@@ -28,11 +28,11 @@ const MenuCard: React.FC<MenuCardProps> = ({
   return (
     <div className='flex flex-col rounded-2xl overflow-hidden shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
       {/* Gambar */}
-      <div className='w-full max-w-[285px] h-[172px] md:h-[285px]'>
+      <div className='w-full  h-[172px] md:h-[285px]'>
         <img
           src={menu.image}
           alt={menu.foodName}
-          className='w-full h-full object-cover'
+          className='w-full h-full object-cover object-center'
         />
       </div>
 

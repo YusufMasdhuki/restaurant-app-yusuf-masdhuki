@@ -5,7 +5,7 @@ import { EXPLORE, HELP } from '@/constants/footer-links';
 const Footer = () => {
   return (
     <div className='bg-neutral-950 py-10 md:py-20 flex justify-center items-center text-white'>
-      <div className='max-w-300 w-full px-4 flex flex-col justify-between items-center gap-6 md:flex-row'>
+      <div className='max-w-300 w-full px-4 flex flex-col justify-between  items-start gap-6 md:flex-row'>
         {/* Kiri: Logo + Deskripsi + Sosmed */}
         <div className='w-full max-w-95'>
           {/* Logo */}

@@ -31,7 +31,7 @@ const RestaurantList: React.FC<Props> = ({ filters }) => {
     data?.pages.flatMap((page) => page.data.restaurants) ?? [];
 
   return (
-    <>
+    <div className='w-full'>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-4 w-full'>
         {restaurants.map((resto) => (
           <RestoCard
@@ -45,10 +45,10 @@ const RestaurantList: React.FC<Props> = ({ filters }) => {
           />
         ))}
       </div>
-      <div ref={ref} className='h-12 flex items-center justify-center mt-6'>
+      <div ref={ref} className='flex items-center justify-center'>
         {isFetchingNextPage && <p>Loading more...</p>}
       </div>
-    </>
+    </div>
   );
 };
 
