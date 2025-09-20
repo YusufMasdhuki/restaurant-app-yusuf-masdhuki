@@ -38,23 +38,25 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
   );
 
   return (
-    <div className='bg-white p-5 shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
+    <div className='bg-white p-4 md:p-5 shadow-[0_0_20px_rgba(203,202,202,0.25)]'>
       {/* Header */}
       <Link
         to={`/detail-restaurant/${restaurantId}`}
-        className='flex items-center gap-2 mb-5'
+        className='flex items-center gap-2 mb-3 md:mb-5 group'
       >
         <img src='/icons/resto-icon.svg' alt='resto-icon' className='w-8 h-8' />
-        <p className='font-bold text-lg text-neutral-950'>{restaurantName}</p>
+        <p className='font-bold text-sm md:text-lg text-neutral-950 group-hover:text-primary-100'>
+          {restaurantName}
+        </p>
       </Link>
 
       {/* Items */}
-      <div className='flex flex-col gap-5 border-b border-neutral-300 pb-5'>
+      <div className='flex flex-col gap-3 md:gap-5 border-b border-neutral-300 pb-3 md:pb-5'>
         {items.map((item) => {
           const menu = menus.find((m) => m.id === item.menuId);
           return (
-            <div key={item.menuId} className='flex items-center gap-4'>
-              <div className='w-20 h-20 rounded-xl overflow-hidden'>
+            <div key={item.menuId} className='flex items-center gap-3 md:gap-4'>
+              <div className='md:size-20 size-16 rounded-xl overflow-hidden'>
                 <img
                   src={menu?.image ?? '/icons/menu-placeholder.svg'}
                   alt={item.menuName}
@@ -62,7 +64,7 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
                 />
               </div>
               <div>
-                <p className='text-md font-medium text-neutral-950'>
+                <p className='text-sm md:text-md font-medium text-neutral-950'>
                   {item.menuName}
                 </p>
                 <p className='text-md font-extrabold text-neutral-950'>
@@ -75,10 +77,12 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
       </div>
 
       {/* Footer */}
-      <div className='pt-5 flex items-center justify-between'>
-        <div>
-          <h3 className='text-md font-medium text-neutral-950'>Total</h3>
-          <p className='text-xl font-extrabold text-neutral-950'>
+      <div className='pt-3 md:pt-5 flex flex-col md:flex-row md:items-center md:justify-between'>
+        <div className=' mb-3 md:mb-0'>
+          <h3 className='text-sm md:text-md font-medium text-neutral-950'>
+            Total
+          </h3>
+          <p className='text-md md:text-xl font-extrabold text-neutral-950'>
             Rp{subtotal.toLocaleString('id-ID')}
           </p>
         </div>
@@ -86,15 +90,17 @@ const OrderRestaurantCard: React.FC<OrderRestaurantProps> = ({
         {status === 'done' &&
           (review ? (
             <Button
-              className='text-white bg-neutral-700 w-60'
+              className='text-white bg-neutral-700 hover:bg-neutral-600 w-full md:max-w-60'
+              size='normal'
               onClick={() => navigate('/my-reviews')}
             >
-              Lihat Review
+              See Review
             </Button>
           ) : (
             <Button
-              className='text-white bg-primary-100 w-60'
+              className='text-white bg-primary-100 hover:bg-[#db6d65] w-full md:max-w-60'
               onClick={() => setOpenReview(true)}
+              size='normal'
             >
               Give Review
             </Button>

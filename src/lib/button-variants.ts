@@ -18,12 +18,12 @@ export const buttonVariants = cva(
         underline: 'hover:underline',
       },
       size: {
-        default: 'h-12 w-full min-w-41',
+        default: 'h-11 md:h-12 w-full min-w-41',
         sm: 'h-8 rounded-md px-3 text-xs',
         md: 'h-10 rounded-full w-20',
         lg: 'h-11 px-4',
-        normal: 'h-12',
-        icon: 'h-10 w-10',
+        normal: 'h-11 md:h-12',
+        icon: 'h-9 w-9 md:h-10 md:w-10',
       },
     },
     defaultVariants: {

@@ -21,7 +21,7 @@ const OrdersTabs = () => {
   } = useMyOrdersInfinite({ status, limit: 5 });
 
   return (
-    <div className='p-6 bg-white rounded-2xl'>
+    <div className='p-4 md:p-6 bg-white rounded-2xl w-full'>
       <div className='relative mb-5'>
         <Input
           className='w-full max-w-[598px] h-11 pl-10.5 rounded-full border border-neutral-300 text-sm'
@@ -33,13 +33,20 @@ const OrdersTabs = () => {
         />
         <Search className='absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500' />
       </div>
-      <TabsList className='mb-6 flex items-center gap-3 w-full'>
-        <h2 className='text-lg font-bold text-neutral-950'>Status</h2>
+      <TabsList className='mb-5 md:mb-6 flex items-center gap-2 md:gap-3 pb-1 overflow-x-auto scrollbar-hide'>
+        <h2 className='flex-shrink-0 text-sm md:text-lg font-bold text-neutral-950'>
+          Status
+        </h2>
         {ORDER_STATUSES.map((s) => (
-          <TabsTrigger key={s.value} value={s.value} asChild className='w-auto'>
+          <TabsTrigger
+            key={s.value}
+            value={s.value}
+            asChild
+            className='flex-shrink-0'
+          >
             <Button
-              size='md'
-              className='px-4 w-auto border border-neutral-300 data-[state=active]:border-primary-100 data-[state=active]:text-primary-100'
+              size='normal'
+              className='px-4 h-10 md:h-11 w-auto border border-neutral-300 data-[state=active]:border-primary-100 data-[state=active]:text-primary-100'
             >
               {s.label}
             </Button>

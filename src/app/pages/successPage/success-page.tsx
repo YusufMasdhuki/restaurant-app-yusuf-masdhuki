@@ -31,8 +31,8 @@ const SuccessPage = () => {
   );
 
   return (
-    <div className='bg-neutral-200 min-h-screen'>
-      <div className='max-w-[428px] mx-auto pt-32 px-4 pb-25'>
+    <div className='bg-neutral-200 min-h-screen flex items-center justify-center'>
+      <div className='max-w-[428px] w-full mx-auto p-4 md:p-5'>
         <div className='flex items-center gap-4 justify-center mb-7'>
           <LogoFoody className='size-10.5 text-primary-100' />
           <h1 className='text-display-md font-extrabold text-neutral-950'>
@@ -40,7 +40,7 @@ const SuccessPage = () => {
           </h1>
         </div>
 
-        <div className='relative flex flex-col justify-center items-center gap-0.5 p-5 bg-white rounded-t-2xl'>
+        <div className='relative flex flex-col justify-center items-center gap-0.5 p-4 md:p-5 bg-white rounded-t-2xl'>
           <div
             className='absolute bottom-0 left-0 right-0 h-px bg-transparent 
                   [background-image:repeating-linear-gradient(90deg,#d4d4d8_0_4px,transparent_4px_8px)]'
@@ -51,10 +51,10 @@ const SuccessPage = () => {
           <div className='size-16 rounded-full bg-[#44AB09] flex items-center justify-center'>
             <Check className='text-white size-12' />
           </div>
-          <h2 className='text-xl font-extrabold text-neutral-950'>
+          <h2 className='text-lg md:text-xl font-extrabold text-neutral-950'>
             Payment Success
           </h2>
-          <p className='text-neutral-950 text-md text-center'>
+          <p className='text-neutral-950 text-sm md:text-md text-center'>
             Your payment has been successfully processed.
           </p>
         </div>
@@ -66,20 +66,22 @@ const SuccessPage = () => {
           <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-tr-full' />
 
           <div className='flex flex-col gap-4'>
-            <div className='flex justify-between'>
-              <span className='text-md font-medium'>Date</span>
-              <span className='text-md font-bold'>
+            <div className='flex justify-between items-center'>
+              <span className='text-sm md:text-md font-medium'>Date</span>
+              <span className='text-sm md:text-md font-bold'>
                 {dayjs(transaction.createdAt).format('DD MMMM YYYY, HH:mm')}
               </span>
             </div>
-            <div className='flex justify-between'>
-              <span className='text-md font-medium'>Payment Method</span>
-              <span className='font-bold text-md'>
+            <div className='flex justify-between items-center'>
+              <span className='text-sm md:text-md font-medium'>
+                Payment Method
+              </span>
+              <span className='font-bold text-sm md:text-md'>
                 {payment ? payment.name : transaction.paymentMethod}
               </span>
             </div>
-            <div className='flex justify-between'>
-              <span className='text-md font-medium'>
+            <div className='flex justify-between items-center'>
+              <span className='text-sm md:text-md font-medium'>
                 Price (
                 {transaction.restaurants.reduce(
                   (acc, resto) =>
@@ -89,19 +91,23 @@ const SuccessPage = () => {
                 )}
                 items)
               </span>
-              <span className='font-bold text-md'>
+              <span className='font-bold text-sm md:text-md'>
                 Rp {transaction.pricing.subtotal.toLocaleString()}
               </span>
             </div>
-            <div className='flex justify-between'>
-              <span className='text-md font-medium'>Delivery Fee</span>
-              <span className='font-bold text-md'>
+            <div className='flex justify-between items-center'>
+              <span className='text-sm md:text-md font-medium'>
+                Delivery Fee
+              </span>
+              <span className='font-bold text-sm md:text-md'>
                 Rp {transaction.pricing.deliveryFee.toLocaleString()}
               </span>
             </div>
-            <div className='flex justify-between'>
-              <span className='text-md font-medium'>Service Fee</span>
-              <span className='font-bold text-md'>
+            <div className='flex justify-between items-center'>
+              <span className='text-sm md:text-md font-medium'>
+                Service Fee
+              </span>
+              <span className='font-bold text-sm md:text-md'>
                 Rp {transaction.pricing.serviceFee.toLocaleString()}
               </span>
             </div>
@@ -115,15 +121,15 @@ const SuccessPage = () => {
           <div className='absolute top-0 left-0 w-2.5 h-2.5 bg-neutral-200 rounded-br-full' />
           <div className='absolute top-0 right-0 w-2.5 h-2.5 bg-neutral-200 rounded-bl-full' />
           <div className='flex flex-col gap-4'>
-            <div className='flex justify-between font-bold text-lg'>
-              <span className='text-md font-medium'>Total</span>
-              <span className='font-bold text-md'>
+            <div className='flex justify-between items-center'>
+              <span className='text-md md:text-lg font-medium'>Total</span>
+              <span className='font-extrabold text-md md:text-lg'>
                 Rp {transaction.pricing.totalPrice.toLocaleString()}
               </span>
             </div>
             <Button
               onClick={() => navigate('/my-orders')}
-              className='w-full bg-primary-100 text-white'
+              className='w-full bg-primary-100 hover:bg-[#db6d65] text-white'
             >
               See My Orders
             </Button>

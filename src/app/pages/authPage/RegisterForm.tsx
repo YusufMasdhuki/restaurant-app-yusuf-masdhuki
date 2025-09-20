@@ -76,7 +76,7 @@ export default function RegisterForm({ onSuccess }: RegisterFormProps) {
 
       <Button
         type='submit'
-        className='w-full hover:bg-[#ba534c] bg-primary-100 text-neutral-25'
+        className='w-full hover:bg-[#db6d65] bg-primary-100 text-neutral-25'
         disabled={registerMutation.isPending}
       >
         {registerMutation.isPending ? 'Registering...' : 'Register'}

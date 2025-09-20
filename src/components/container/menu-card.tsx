@@ -55,21 +55,21 @@ const MenuCard: React.FC<MenuCardProps> = ({
               size='icon'
               className='border border-neutral-300 h-9 w-9 md:h-10 md:w-10'
             >
-              <Minus />
+              <Minus className='size-5 md:size-6' />
             </Button>
             <span>{quantity}</span>
             <Button
               onClick={() => onIncrease?.(menu)}
               size='icon'
-              className='bg-primary-100 text-white h-9 w-9 md:h-10 md:w-10'
+              className='bg-primary-100 hover:bg-[#db6d65] text-white h-9 w-9 md:h-10 md:w-10'
             >
-              <Plus />
+              <Plus className='size-5 md:size-6' />
             </Button>
           </div>
         ) : (
           <Button
             size='md'
-            className='w-full md:w-20 h-9 md:h-10 bg-primary-100 text-white disabled:opacity-50'
+            className='w-full md:w-20 h-9 md:h-10 bg-primary-100 hover:bg-[#db6d65] text-white disabled:opacity-50'
             disabled={isAdding}
             onClick={() => onAdd?.(menu)}
           >

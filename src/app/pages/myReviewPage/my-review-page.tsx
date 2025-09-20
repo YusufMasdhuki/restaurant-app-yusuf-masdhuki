@@ -3,6 +3,7 @@ import { ReviewDialog } from '@/components/container/ReviewDialog';
 import { UserSidebar } from '@/components/container/user-sidebar';
 import { Button } from '@/components/ui/button';
 import { useMyReviewsInfinite } from '@/hooks/reviews/useMyReviewsInfinite';
+import { useIsMobile } from '@/lib/useIsMobile';
 import type { GetMyReviewsSuccessResponse } from '@/types/get-my-review';
 import type { InfiniteData } from '@tanstack/react-query';
 import dayjs from 'dayjs';
@@ -10,6 +11,12 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 const MyReviewPage = () => {
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const {
     data,
     fetchNextPage,
@@ -34,8 +41,18 @@ const MyReviewPage = () => {
     if (inView && hasNextPage) fetchNextPage();
   }, [inView, hasNextPage, fetchNextPage]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
+  if (isLoading)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <p>Loading...</p>
+      </div>
+    );
+  if (isError)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <p>Error: {error?.message}</p>
+      </div>
+    );
 
   const infiniteData = data as
     | InfiniteData<GetMyReviewsSuccessResponse>
@@ -44,12 +61,14 @@ const MyReviewPage = () => {
     infiniteData?.pages.flatMap((page) => page.data.reviews) ?? [];
 
   return (
-    <div className='max-w-300 mx-auto p-4 pt-32 pb-25'>
+    <div className='max-w-300 mx-auto p-4 pt-20 md:pt-32 pb-10 md:pb-25'>
       <div className='flex justify-between gap-8'>
         {/* Sidebar */}
-        <div>
-          <UserSidebar />
-        </div>
+        {!isMobile && (
+          <div>
+            <UserSidebar />
+          </div>
+        )}
 
         {/* Content */}
         <div className='w-full'>
@@ -57,26 +76,49 @@ const MyReviewPage = () => {
             My Reviews
           </h1>
           {allReviews.length === 0 && (
-            <p>You haven't written any reviews yet.</p>
+            <div className='flex items-center justify-center h-[70vh]'>
+              <p>You haven't written any reviews yet.</p>
+            </div>
           )}
           <div className='flex flex-col gap-4'>
             {allReviews.map((review) => (
-              <div key={review.id} className='p-4 border rounded-lg shadow-sm'>
-                <div className='flex items-center justify-between mb-2'>
-                  <h2 className='font-semibold'>{review.restaurant.name}</h2>
-                  <span className='text-sm text-gray-500'>
-                    {dayjs(review.createdAt).format('MMM DD, YYYY')}
-                  </span>
+              <div
+                key={review.id}
+                className='p-4 md:p-5 border rounded-2xl shadow-[0_0_20px_rgba(203,202,202,0.25)] flex flex-col gap-3 md:gap-4'
+              >
+                <div className='flex flex-col gap-1'>
+                  <div className='flex items-center gap-2'>
+                    <img
+                      src='/icons/resto-icon.svg'
+                      alt='resto-icon'
+                      className='size-8'
+                    />
+                    <h2 className='font-bold text-sm md:text-lg'>
+                      {review.restaurant.name}
+                    </h2>
+                  </div>
+                  <p className='text-sm md:text-md text-neutral-950'>
+                    {dayjs(review.createdAt).format('DD MMMM YYYY, HH:mm')}
+                  </p>
                 </div>
-                <p className='text-yellow-500 font-bold'>
-                  {'⭐'.repeat(review.star)}
-                </p>
+
+                <div className='flex items-center gap-0 md:gap-0.5'>
+                  {Array.from({ length: review.star }).map((_, i) => (
+                    <img
+                      key={i}
+                      src='/icons/star.svg'
+                      alt='star'
+                      className='size-6'
+                    />
+                  ))}
+                </div>
                 <p className='mt-1'>{review.comment}</p>
 
                 {/* Edit & Delete */}
                 <div className='mt-2 flex gap-2'>
                   <Button
-                    size='sm'
+                    size='normal'
+                    className='border border-primary-300 md:max-w-30 w-full'
                     onClick={() =>
                       setEditingReview({
                         id: review.id,
@@ -88,8 +130,8 @@ const MyReviewPage = () => {
                     Edit
                   </Button>
                   <Button
-                    size='sm'
-                    variant='destructive'
+                    size='normal'
+                    className='bg-red-500 text-white hover:bg-red-600 w-full md:max-w-30'
                     onClick={() => setConfirmDelete(review.id)}
                   >
                     Delete

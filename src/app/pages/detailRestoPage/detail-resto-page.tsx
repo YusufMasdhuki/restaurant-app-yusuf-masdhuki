@@ -14,6 +14,7 @@ import MenuTabs from './menu-tabs';
 import RestoHeader from './resto-header';
 import RestoImages from './resto-images';
 import { findCartItem, handleCartItemQuantity } from '@/lib/cart-utils';
+import { useEffect } from 'react';
 
 const DetailRestoPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +26,10 @@ const DetailRestoPage = () => {
   const updateCartMutation = useUpdateCartItem();
   const removeCartMutation = useRemoveCartItem();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { data, isLoading, isError, error } = useRestoDetail(restoId, {
     limitMenu: 10,
     limitReview: 6,
@@ -35,12 +40,27 @@ const DetailRestoPage = () => {
     restoId
   );
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error?.message}</div>;
+  if (isLoading)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <p>Loading...</p>
+      </div>
+    );
+  if (isError)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        Error: {error?.message}
+      </div>
+    );
 
   const resto = data?.data;
 
-  if (!resto) return <div>Restoran tidak ditemukan</div>;
+  if (!resto)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        Restaurant not found
+      </div>
+    );
 
   // Ambil quantity dari cart
   const getQuantity = (

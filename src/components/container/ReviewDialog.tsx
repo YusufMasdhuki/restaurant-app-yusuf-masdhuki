@@ -12,6 +12,7 @@ import { useCreateReview } from '@/hooks/reviews/useCreateReview';
 import { useUpdateReview } from '@/hooks/reviews/useUpdateReview';
 import { useQueryClient } from '@tanstack/react-query';
 import Star from '../icons/star';
+import { AnimatePresence, motion } from 'motion/react';
 
 interface ReviewDialogProps {
   open: boolean;
@@ -83,55 +84,72 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className='rounded-2xl p-6'>
-        <DialogHeader>
-          <DialogTitle className='text-display-xs font-extrabold'>
-            {reviewId ? 'Edit Review' : 'Give Review'}
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className='sm:max-w-[450px] bg-transparent p-4'>
+        <AnimatePresence mode='wait'>
+          {open && (
+            <motion.div
+              key='update-profile-dialog'
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className='bg-white rounded-2xl p-4 md:p-6 shadow-xl'
+            >
+              <DialogHeader>
+                <DialogTitle className='text-xl md:text-display-xs font-extrabold mb-4 md:mb-6'>
+                  {reviewId ? 'Edit Review' : 'Give Review'}
+                </DialogTitle>
+              </DialogHeader>
 
-        {/* Star rating */}
-        <div className='flex flex-col items-center justify-center mb-4'>
-          <h2 className='text-md font-extrabold'>Rating</h2>
-          <div className='flex gap-1'>
-            {[1, 2, 3, 4, 5].map((val) => (
-              <button
-                key={val}
-                type='button'
-                onClick={() => setStar(val)}
-                className={val <= star ? 'text-yellow-500' : 'text-gray-300'}
-              >
-                <Star />
-              </button>
-            ))}
-          </div>
-        </div>
+              {/* Star rating */}
+              <div className='flex flex-col items-center justify-center mb-4 md:mb-6'>
+                <h2 className='text-md font-extrabold'>Give Rating</h2>
+                <div className='flex gap-1'>
+                  {[1, 2, 3, 4, 5].map((val) => (
+                    <button
+                      key={val}
+                      type='button'
+                      onClick={() => setStar(val)}
+                      className={
+                        val <= star ? 'text-yellow-500' : 'text-gray-300'
+                      }
+                    >
+                      <Star className='size-10 md:size-12' />
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-        {/* Comment input */}
-        <Textarea
-          placeholder='Please share your thoughts about our service!'
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          className='min-h-[235px] mb-4'
-        />
+              {/* Comment input */}
+              <Textarea
+                placeholder='Please share your thoughts about our service!'
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                className='min-h-[235px] mb-4 md:mb-6 text-sm md:text-md'
+              />
 
-        <DialogFooter>
-          <Button
-            onClick={handleSubmit}
-            disabled={
-              star === 0 || createReview.isPending || updateReview.isPending
-            } // ✅ correct
-            className='bg-primary-100 text-white'
-          >
-            {reviewId
-              ? updateReview.isPending
-                ? 'Saving...'
-                : 'Save'
-              : createReview.isPending
-              ? 'Sending...'
-              : 'Send'}
-          </Button>
-        </DialogFooter>
+              <DialogFooter>
+                <Button
+                  onClick={handleSubmit}
+                  disabled={
+                    star === 0 ||
+                    createReview.isPending ||
+                    updateReview.isPending
+                  } // ✅ correct
+                  className='bg-primary-100 hover:bg-[#db6d65] text-white'
+                >
+                  {reviewId
+                    ? updateReview.isPending
+                      ? 'Saving...'
+                      : 'Save'
+                    : createReview.isPending
+                    ? 'Sending...'
+                    : 'Send'}
+                </Button>
+              </DialogFooter>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </DialogContent>
     </Dialog>
   );

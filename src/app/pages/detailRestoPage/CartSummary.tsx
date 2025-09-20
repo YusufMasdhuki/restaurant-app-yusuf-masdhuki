@@ -31,7 +31,7 @@ const CartSummary: React.FC<Props> = ({
         </div>
         <Button
           onClick={onCheckout}
-          className='bg-primary-100 text-white w-40 md:w-[230px] h-10 md:h-11'
+          className='bg-primary-100 hover:bg-[#db6d65] text-white w-40 md:w-[230px] h-10 md:h-11'
         >
           Checkout
         </Button>

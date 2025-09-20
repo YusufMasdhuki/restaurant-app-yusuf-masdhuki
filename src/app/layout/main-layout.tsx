@@ -10,7 +10,8 @@ const MainLayout: React.FC<{
   children: React.ReactNode;
   currentPath: string;
 }> = ({ children, currentPath }) => {
-  const hideLayout = currentPath === '/auth'; // cek path dari App
+  const hideLayoutPaths = ['/auth', '/success']; // daftar path yang hide layout
+  const hideLayout = hideLayoutPaths.includes(currentPath);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -84,7 +84,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
           onCheckedChange={(val) => setValue('rememberMe', Boolean(val))}
           className='cursor-pointer'
         />
-        <label htmlFor='rememberMe' className='text-sm select-none'>
+        <label htmlFor='rememberMe' className='text-sm md:text-md select-none'>
           Remember Me
         </label>
       </div>
@@ -92,7 +92,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       {/* Submit */}
       <Button
         type='submit'
-        className='w-full bg-primary-100 text-neutral-25 hover:bg-[#ba534c]'
+        className='w-full bg-primary-100 text-neutral-25 hover:bg-[#db6d65]'
         disabled={loginMutation.isPending}
       >
         {loginMutation.isPending ? 'Logging in...' : 'Login'}

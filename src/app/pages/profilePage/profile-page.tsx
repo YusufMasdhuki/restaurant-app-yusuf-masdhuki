@@ -2,12 +2,22 @@ import UpdateProfileDialog from '@/components/container/update-profile-dialog';
 import { UserSidebar } from '@/components/container/user-sidebar';
 import { useProfile } from '@/hooks/auth/useProfile';
 import { useIsMobile } from '@/lib/useIsMobile';
+import { useEffect } from 'react';
 
 const ProfilePage = () => {
   const { data: profile, isLoading, error } = useProfile();
   const isMobile = useIsMobile(); // default breakpoint 768
 
-  if (isLoading) return <p>Loading...</p>;
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  if (isLoading)
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <p>Loading...</p>
+      </div>
+    );
   if (error) return <p>Error: {error.message}</p>;
 
   return (

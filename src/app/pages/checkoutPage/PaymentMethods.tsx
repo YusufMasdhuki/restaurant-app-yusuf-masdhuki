@@ -13,7 +13,7 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
   onSelect,
 }) => {
   return (
-    <div className='relative overflow-hidden bg-white p-5 rounded-t-2xl'>
+    <div className='relative overflow-hidden bg-white p-4  md:p-5 rounded-t-2xl'>
       {/* border dashed dibuat manual */}
       <div
         className='absolute bottom-0 left-0 right-0 h-px bg-transparent 
@@ -21,37 +21,37 @@ const PaymentMethods: React.FC<PaymentMethodsProps> = ({
       />
 
       {/* cekungan */}
-      <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-50 rounded-tr-full' />
-      <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-neutral-50 rounded-tl-full' />
-      <h2 className='text-lg font-extrabold text-neutral-950 mb-4'>
+      <div className='absolute bottom-0 left-0 w-2.5 h-2.5 bg-neutral-100 rounded-tr-full' />
+      <div className='absolute bottom-0 right-0 w-2.5 h-2.5 bg-neutral-100 rounded-tl-full' />
+      <h2 className='text-md md:text-lg font-extrabold text-neutral-950'>
         Payment Method
       </h2>
       <div className='flex flex-col divide-y divide-neutral-300'>
         {PAYMENT_METHODS.map((method) => (
           <label
             key={method.id}
-            className='flex items-center gap-3 py-4 cursor-pointer'
+            className='flex items-center justify-between gap-2 py-3 md:py-4 cursor-pointer'
           >
+            <div className='flex items-center gap-2'>
+              <div className='flex items-center justify-center size-10 border border-neutral-300 rounded-md'>
+                <img
+                  src={method.img}
+                  alt={method.name}
+                  className='size-7.5 object-contain'
+                />
+              </div>
+              <span className='text-sm md:text-md text-neutral-950'>
+                {method.name}
+              </span>
+            </div>
             <input
               type='radio'
               name='payment-method'
               value={method.id}
               checked={selectedMethod?.id === method.id}
               onChange={() => onSelect(method)}
-              className='accent-neutral-950'
+              className='accent-primary-100'
             />
-            <div className='flex items-center gap-3'>
-              <div className='flex items-center justify-center w-12 h-12 border border-neutral-300 rounded-md'>
-                <img
-                  src={method.img}
-                  alt={method.name}
-                  className='w-8 h-8 object-contain'
-                />
-              </div>
-              <span className='font-medium text-neutral-950'>
-                {method.name}
-              </span>
-            </div>
           </label>
         ))}
       </div>

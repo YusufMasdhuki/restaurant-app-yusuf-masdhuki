@@ -30,7 +30,12 @@ export const OrderList = ({
     },
   });
 
-  if (queryStatus === 'pending') return <p>Loading...</p>;
+  if (queryStatus === 'pending')
+    return (
+      <div className='flex items-center justify-center h-[50vh]'>
+        <p>Loading...</p>
+      </div>
+    );
   if (queryStatus === 'error')
     return <p className='text-red-500'>Failed to fetch orders</p>;
 
@@ -47,12 +52,16 @@ export const OrderList = ({
   );
 
   return (
-    <div className='flex flex-col gap-6'>
-      {filtered.map((order) => (
-        <OrderCard key={order.id} order={order} />
-      ))}
+    <div className='flex flex-col gap-4 md:gap-6'>
+      {filtered.length === 0 ? (
+        <div className='flex justify-center items-center h-[50vh]'>
+          <p className='text-center font-medium'>No orders found</p>
+        </div>
+      ) : (
+        filtered.map((order) => <OrderCard key={order.id} order={order} />)
+      )}
 
-      {hasNextPage && (
+      {hasNextPage && filtered.length > 0 && (
         <div ref={ref} className='flex justify-center'>
           <Button
             onClick={() => fetchNextPage()}

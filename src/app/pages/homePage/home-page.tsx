@@ -2,7 +2,7 @@
 import RestoCard from '@/components/container/resto-card';
 import { useInfiniteRestaurants } from '@/hooks/restaurants/useRestaurants';
 import type { RootState } from '@/store';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Hero from './hero';
 import RecommendedResto from './recommended-resto';
@@ -16,6 +16,10 @@ const HomePage = () => {
 
   // fetch dari API berdasarkan filters (tanpa search)
   const { data, isLoading, isError, error } = useInfiniteRestaurants(filters);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // flatten pages jadi array restoran
   const apiRestaurants = useMemo(() => {

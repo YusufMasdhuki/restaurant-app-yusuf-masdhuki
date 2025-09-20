@@ -109,7 +109,7 @@ const PriceFilter = () => {
       <Button
         type='button'
         onClick={applyPriceFilter}
-        className='bg-primary-100 text-white'
+        className='bg-primary-100 hover:bg-[#db6d65] text-white'
       >
         Apply
       </Button>

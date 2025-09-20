@@ -11,7 +11,7 @@ import type { PaymentMethod } from '@/constants/paymentMethods';
 import type { CartItem, CartSuccessResponse } from '@/types/cart-type';
 import { useUpdateCartItem } from '@/hooks/cart/useUpdateCartItem ';
 import { useRemoveCartItem } from '@/hooks/cart/useRemoveCartItem ';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { handleCartItemQuantity } from '@/lib/cart-utils';
 
 const CheckoutPage = () => {
@@ -20,6 +20,10 @@ const CheckoutPage = () => {
     queryKey: ['cart'],
     queryFn: getCart,
   });
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Mutations
   const { mutate: updateCartItem } = useUpdateCartItem();
@@ -48,14 +52,14 @@ const CheckoutPage = () => {
   }
 
   return (
-    <div className='bg-neutral-50'>
-      <div className='max-w-250 px-4 pt-32 mx-auto pb-25'>
-        <h1 className='text-display-md font-extrabold text-neutral-950 mb-6'>
+    <div className='bg-neutral-100 text-neutral-950'>
+      <div className='max-w-250 px-4 pt-20 md:pt-32 mx-auto pb-12 md:pb-25'>
+        <h1 className='text-display-xs md:text-display-md font-extrabold text-neutral-950 mb-4 md:mb-6'>
           Checkout
         </h1>
-        <div className='flex gap-5'>
+        <div className='flex flex-col md:flex-row gap-4 md:gap-5'>
           {/* Left */}
-          <div className='flex-[7.9] basis-80 space-y-5'>
+          <div className='md:flex-[7.9] md:basis-80 space-y-4 md:space-y-5'>
             <DeliveryAddress />
             {cartData.data.cart.map((group) => (
               <RestaurantItems

@@ -41,7 +41,7 @@ const BuyButton: React.FC<Props> = ({ paymentMethod, deliveryAddress }) => {
       <Button
         onClick={handleBuy}
         disabled={isPending}
-        className='h-12 w-full font-bold bg-primary-100 text-white'
+        className='h-11 md:h-12 w-full font-bold bg-primary-100 hover:bg-[#db6d65] text-white'
       >
         {isPending ? 'Processing...' : 'Buy'}
       </Button>

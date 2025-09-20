@@ -12,18 +12,23 @@ import {
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/lib/useIsMobile';
 import { ListFilter } from 'lucide-react';
+import { useEffect } from 'react';
 
 const AllRestaurantPage = () => {
   const filters = useSelector((state: RootState) => state.restaurantFilter);
   const isMobile = useIsMobile();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className='w-full'>
-      <div className='w-full max-w-300 px-4 min-h-screen mx-auto pt-20 md:mt-12 mb-10 md:mb-25 md:pt-24'>
+      <div className='w-full max-w-300 px-4 min-h-screen mx-auto pt-20 md:mt-12 mb-10 md:mb-25 md:pt-20'>
         <h2 className='text-display-xs md:text-display-md font-extrabold text-neutral-950 mb-4 md:mb-8'>
           All Restaurant
         </h2>
-        <div className='flex flex-col md:flex-row gap-4 md:gap-10'>
+        <div className='flex flex-col md:flex-row gap-4 lg:gap-10'>
           {/* Filter bar */}
           {isMobile ? (
             <Sheet>
